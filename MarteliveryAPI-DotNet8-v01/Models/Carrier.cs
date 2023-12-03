@@ -2,11 +2,11 @@
 
 namespace MarteliveryAPI_DotNet8_v01.Models
 {
-    [Table("customers")]
-    public class Customer
+    [Table("carriers")]
+    public class Carrier
     {
-        [Column("customer_id")]
-        public required int CustomerId { get; set; }
+        [Column("carrier_id")]
+        public required int CarrierId { get; set; }
         [Column("first_name", TypeName = "varchar(250)")]
         public required string FirstName { get; set; }
         [Column("last_name", TypeName = "varchar(250)")]
@@ -25,8 +25,6 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         public string? LoginProvider { get; set; }
         [Column("token", TypeName = "varchar(250)")]
         public string? Token { get; set; }
-
-        public List<Parcel> Parcels { get; set; }
-        public List<CarrierRating> CarrierRatings { get; set; }
+        public List<Quote> Quotes { get; set; }
     }
 }
