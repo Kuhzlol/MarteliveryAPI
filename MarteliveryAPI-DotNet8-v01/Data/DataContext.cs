@@ -1,4 +1,4 @@
-﻿using MarteliveryAPI_DotNet8_v01.Entities;
+﻿using MarteliveryAPI_DotNet8_v01.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarteliveryAPI_DotNet8_v01.Data

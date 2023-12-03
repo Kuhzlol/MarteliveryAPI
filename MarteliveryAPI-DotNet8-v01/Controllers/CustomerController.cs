@@ -1,5 +1,5 @@
 ﻿using MarteliveryAPI_DotNet8_v01.Data;
-using MarteliveryAPI_DotNet8_v01.Entities;
+using MarteliveryAPI_DotNet8_v01.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -56,14 +56,38 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             if (customerToUpdate == null)
                 return NotFound("Customer not found");
 
-            customerToUpdate.firstname = customer.firstname;
-            customerToUpdate.lastname = customer.lastname;
-            customerToUpdate.email = customer.email;
-            customerToUpdate.mobile = customer.mobile;
+            // Compare updated customer data with original customer data
+            bool isModified = false;
+            if (customerToUpdate.FirstName != customer.FirstName)
+            {
+                isModified = true;
+                customerToUpdate.FirstName = customer.FirstName;
+            }
+            if (customerToUpdate.LastName != customer.LastName)
+            {
+                isModified = true;
+                customerToUpdate.LastName = customer.LastName;
+            }
+            if (customerToUpdate.Email != customer.Email)
+            {
+                isModified = true;
+                customerToUpdate.Email = customer.Email;
+            }
+            if (customerToUpdate.PhoneNumber != customer.PhoneNumber)
+            {
+                isModified = true;
+                customerToUpdate.PhoneNumber = customer.PhoneNumber;
+            }
 
-            await _context.SaveChangesAsync();
-
-            return Ok("Customer updated");
+            if (isModified)
+            {
+                await _context.SaveChangesAsync();
+                return Ok("Customer updated");
+            }
+            else
+            {
+                return Ok("No changes were made to the customer");
+            }
         }
 
         [HttpDelete("{id}", Name = "DeleteCustomer")]

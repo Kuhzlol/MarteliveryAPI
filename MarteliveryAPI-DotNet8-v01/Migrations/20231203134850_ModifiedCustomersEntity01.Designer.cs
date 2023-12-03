@@ -3,6 +3,7 @@ using System;
 using MarteliveryAPI_DotNet8_v01.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MarteliveryAPI_DotNet8_v01.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231203134850_ModifiedCustomersEntity01")]
+    partial class ModifiedCustomersEntity01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +43,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnType("varchar(250)")
                         .HasColumnName("email");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("email_confirmed");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("varchar(250)")
@@ -50,17 +57,13 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnType("varchar(250)")
                         .HasColumnName("hashed_password");
 
-                    b.Property<bool>("IsEmailConfirmed")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_email_confirmed");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("varchar(250)")
                         .HasColumnName("last_name");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("text")
                         .HasColumnName("login_provider");
 
                     b.Property<string>("PhoneNumber")
@@ -69,7 +72,7 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnName("phone_number");
 
                     b.Property<string>("Token")
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("text")
                         .HasColumnName("token");
 
                     b.HasKey("CustomerId");
