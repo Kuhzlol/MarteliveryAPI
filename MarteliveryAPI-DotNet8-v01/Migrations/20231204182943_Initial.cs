@@ -1,29 +1,91 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace MarteliveryAPI_DotNet8_v01.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAllTablesAndRelationship : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "carriers",
+                columns: table => new
+                {
+                    carrier_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    first_name = table.Column<string>(type: "varchar(250)", nullable: false),
+                    last_name = table.Column<string>(type: "varchar(250)", nullable: false),
+                    email = table.Column<string>(type: "varchar(250)", nullable: false),
+                    is_email_confirmed = table.Column<bool>(type: "boolean", nullable: true),
+                    hashed_password = table.Column<string>(type: "varchar(250)", nullable: true),
+                    phone_number = table.Column<string>(type: "varchar(250)", nullable: false),
+                    date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
+                    login_provider = table.Column<string>(type: "varchar(250)", nullable: true),
+                    token = table.Column<string>(type: "varchar(250)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_carriers", x => x.carrier_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "customers",
+                columns: table => new
+                {
+                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    first_name = table.Column<string>(type: "varchar(250)", nullable: false),
+                    last_name = table.Column<string>(type: "varchar(250)", nullable: false),
+                    email = table.Column<string>(type: "varchar(250)", nullable: false),
+                    is_email_confirmed = table.Column<bool>(type: "boolean", nullable: true),
+                    hashed_password = table.Column<string>(type: "varchar(250)", nullable: true),
+                    phone_number = table.Column<string>(type: "varchar(250)", nullable: false),
+                    date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
+                    login_provider = table.Column<string>(type: "varchar(250)", nullable: true),
+                    token = table.Column<string>(type: "varchar(250)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_customers", x => x.customer_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "parcels",
+                columns: table => new
+                {
+                    parcel_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    pickup_location = table.Column<string>(type: "varchar(250)", nullable: false),
+                    delivery_location = table.Column<string>(type: "varchar(250)", nullable: false),
+                    length = table.Column<float>(type: "real", nullable: false),
+                    width = table.Column<float>(type: "real", nullable: false),
+                    height = table.Column<float>(type: "real", nullable: false),
+                    weight = table.Column<float>(type: "real", nullable: false),
+                    customer_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_parcels", x => x.parcel_id);
+                    table.ForeignKey(
+                        name: "FK_parcels_customers_customer_id",
+                        column: x => x.customer_id,
+                        principalTable: "customers",
+                        principalColumn: "customer_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "quotes",
                 columns: table => new
                 {
-                    quote_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    quote_id = table.Column<Guid>(type: "uuid", nullable: false),
                     delivery_distance = table.Column<float>(type: "real", nullable: false),
                     price_per_km = table.Column<float>(type: "real", nullable: false),
                     total_price = table.Column<float>(type: "real", nullable: false),
                     status = table.Column<string>(type: "varchar(250)", nullable: false),
-                    carrier_id = table.Column<int>(type: "integer", nullable: false),
-                    parcel_id = table.Column<int>(type: "integer", nullable: false)
+                    carrier_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    parcel_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,12 +108,11 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "deliveries",
                 columns: table => new
                 {
-                    delivery_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    delivery_id = table.Column<Guid>(type: "uuid", nullable: false),
                     pickup_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     delivery_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     delivery_status = table.Column<string>(type: "varchar(250)", nullable: false),
-                    quote_id = table.Column<int>(type: "integer", nullable: false)
+                    quote_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,13 +129,12 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "payments",
                 columns: table => new
                 {
-                    payment_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    payment_id = table.Column<Guid>(type: "uuid", nullable: false),
                     payment_method = table.Column<string>(type: "varchar(250)", nullable: false),
                     payment_status = table.Column<string>(type: "varchar(250)", nullable: false),
                     payment_amount = table.Column<float>(type: "real", nullable: false),
                     payment_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    quote_id = table.Column<int>(type: "integer", nullable: false)
+                    quote_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,8 +151,8 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "carrier_ratings",
                 columns: table => new
                 {
-                    delivery_id = table.Column<int>(type: "integer", nullable: false),
-                    customer_id = table.Column<int>(type: "integer", nullable: false),
+                    delivery_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     carrier_rate = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -121,6 +181,11 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "IX_deliveries_quote_id",
                 table: "deliveries",
                 column: "quote_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_parcels_customer_id",
+                table: "parcels",
+                column: "customer_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_payments_quote_id",
@@ -152,6 +217,15 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             migrationBuilder.DropTable(
                 name: "quotes");
+
+            migrationBuilder.DropTable(
+                name: "carriers");
+
+            migrationBuilder.DropTable(
+                name: "parcels");
+
+            migrationBuilder.DropTable(
+                name: "customers");
         }
     }
 }

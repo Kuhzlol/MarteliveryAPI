@@ -8,11 +8,11 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     [Table("carrier_ratings")]
     public class CarrierRating
     {
-        [Column("delivery_id")]
-        public required int DeliveryId { get; set; }
+        [Column("delivery_id", TypeName = "uuid")]
+        public required Guid DeliveryId { get; set; }
         public required Delivery Delivery { get; set; }
-        [Column("customer_id")]
-        public required int CustomerId { get; set; }
+        [Column("customer_id", TypeName = "uuid")]
+        public required Guid CustomerId { get; set; }
         public required Customer Customer { get; set; }
         [Column("carrier_rate")]
         public required int CarrierRate { get; set; }

@@ -5,8 +5,8 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     [Table("customers")]
     public class Customer
     {
-        [Column("customer_id")]
-        public required int CustomerId { get; set; }
+        [Column("customer_id", TypeName = "uuid")]
+        public Guid CustomerId { get; set; }
         [Column("first_name", TypeName = "varchar(250)")]
         public required string FirstName { get; set; }
         [Column("last_name", TypeName = "varchar(250)")]
@@ -14,9 +14,9 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("email", TypeName = "varchar(250)")]
         public required string Email { get; set; }
         [Column("is_email_confirmed")]
-        public required bool IsEmailConfirmed { get; set; }
+        public bool? IsEmailConfirmed { get; set; }
         [Column("hashed_password", TypeName = "varchar(250)")]
-        public required string HashedPassword { get; set; }
+        public string? HashedPassword { get; set; }
         [Column("phone_number", TypeName = "varchar(250)")]
         public required string PhoneNumber { get; set; }
         [Column("date_of_birth")]
@@ -26,7 +26,7 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("token", TypeName = "varchar(250)")]
         public string? Token { get; set; }
 
-        public List<Parcel> Parcels { get; set; }
-        public List<CarrierRating> CarrierRatings { get; set; }
+        public List<Parcel>? Parcels { get; set; }
+        public List<CarrierRating>? CarrierRatings { get; set; }
     }
 }

@@ -5,8 +5,8 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     [Table("parcels")]
     public class Parcel
     {
-        [Column("parcel_id")]
-        public required int ParcelId { get; set; }
+        [Column("parcel_id", TypeName = "uuid")]
+        public Guid ParcelId { get; set; }
         [Column("pickup_location", TypeName = "varchar(250)")]
         public required string PickupLocation { get; set; }
         [Column("delivery_location", TypeName = "varchar(250)")]
@@ -19,9 +19,9 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         public required float Height { get; set; }
         [Column("weight")]
         public required float Weight { get; set; }
-        [Column("customer_id")]
-        public required int CustomerId { get; set; }
+        [Column("customer_id", TypeName = "uuid")]
+        public required Guid CustomerId { get; set; }
         public required Customer Customer { get; set; }
-        public List<Quote> Quotes { get; set; }
+        public List<Quote>? Quotes { get; set; }
     }
 }

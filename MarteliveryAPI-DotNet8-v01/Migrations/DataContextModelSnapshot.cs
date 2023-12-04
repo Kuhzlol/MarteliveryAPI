@@ -24,12 +24,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Carrier", b =>
                 {
-                    b.Property<int>("CarrierId")
+                    b.Property<Guid>("CarrierId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("carrier_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CarrierId"));
 
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date")
@@ -46,11 +44,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnName("first_name");
 
                     b.Property<string>("HashedPassword")
-                        .IsRequired()
                         .HasColumnType("varchar(250)")
                         .HasColumnName("hashed_password");
 
-                    b.Property<bool>("IsEmailConfirmed")
+                    b.Property<bool?>("IsEmailConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("is_email_confirmed");
 
@@ -79,12 +76,12 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.CarrierRating", b =>
                 {
-                    b.Property<int>("DeliveryId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("DeliveryId")
+                        .HasColumnType("uuid")
                         .HasColumnName("delivery_id");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid")
                         .HasColumnName("customer_id");
 
                     b.Property<int>("CarrierRate")
@@ -100,12 +97,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Customer", b =>
                 {
-                    b.Property<int>("CustomerId")
+                    b.Property<Guid>("CustomerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("customer_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CustomerId"));
 
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date")
@@ -122,11 +117,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnName("first_name");
 
                     b.Property<string>("HashedPassword")
-                        .IsRequired()
                         .HasColumnType("varchar(250)")
                         .HasColumnName("hashed_password");
 
-                    b.Property<bool>("IsEmailConfirmed")
+                    b.Property<bool?>("IsEmailConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("is_email_confirmed");
 
@@ -155,12 +149,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Delivery", b =>
                 {
-                    b.Property<int>("DeliveryId")
+                    b.Property<Guid>("DeliveryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("delivery_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DeliveryId"));
 
                     b.Property<string>("DeliveryStatus")
                         .IsRequired()
@@ -175,8 +167,8 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("pickup_time");
 
-                    b.Property<int>("QuoteId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("QuoteId")
+                        .HasColumnType("uuid")
                         .HasColumnName("quote_id");
 
                     b.HasKey("DeliveryId");
@@ -188,15 +180,13 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Parcel", b =>
                 {
-                    b.Property<int>("ParcelId")
+                    b.Property<Guid>("ParcelId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("parcel_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ParcelId"));
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid")
                         .HasColumnName("customer_id");
 
                     b.Property<string>("DeliveryLocation")
@@ -234,12 +224,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Payment", b =>
                 {
-                    b.Property<int>("PaymentId")
+                    b.Property<Guid>("PaymentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("payment_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentId"));
 
                     b.Property<float>("PaymentAmount")
                         .HasColumnType("real")
@@ -259,8 +247,8 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("payment_time");
 
-                    b.Property<int>("QuoteId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("QuoteId")
+                        .HasColumnType("uuid")
                         .HasColumnName("quote_id");
 
                     b.HasKey("PaymentId");
@@ -272,23 +260,21 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Quote", b =>
                 {
-                    b.Property<int>("QuoteId")
+                    b.Property<Guid>("QuoteId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("uuid")
                         .HasColumnName("quote_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QuoteId"));
-
-                    b.Property<int>("CarrierId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("CarrierId")
+                        .HasColumnType("uuid")
                         .HasColumnName("carrier_id");
 
                     b.Property<float>("DeliveryDistance")
                         .HasColumnType("real")
                         .HasColumnName("delivery_distance");
 
-                    b.Property<int>("ParcelId")
-                        .HasColumnType("integer")
+                    b.Property<Guid>("ParcelId")
+                        .HasColumnType("uuid")
                         .HasColumnName("parcel_id");
 
                     b.Property<float>("PricePerKm")

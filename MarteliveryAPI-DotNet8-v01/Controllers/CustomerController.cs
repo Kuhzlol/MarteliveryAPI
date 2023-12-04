@@ -29,7 +29,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpGet("{id}", Name = "GetCustomer")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<Customer>> GetCustomer(Guid id)
         {
             var customer = await _context.Customers.FindAsync(id);
 
@@ -49,7 +49,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpPut("{id}", Name = "UpdateCustomer")]
-        public async Task<ActionResult<Customer>> UpdateCustomer(int id, Customer customer)
+        public async Task<ActionResult<Customer>> UpdateCustomer(Guid id, Customer customer)
         {
             var customerToUpdate = await _context.Customers.FindAsync(id);
 
@@ -91,7 +91,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpDelete("{id}", Name = "DeleteCustomer")]
-        public async Task<ActionResult<Customer>> DeleteCustomer(int id)
+        public async Task<ActionResult<Customer>> DeleteCustomer(Guid id)
         {
             var customerToDelete = await _context.Customers.FindAsync(id);
 
