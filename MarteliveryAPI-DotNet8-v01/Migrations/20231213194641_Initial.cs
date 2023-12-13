@@ -15,7 +15,7 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "carriers",
                 columns: table => new
                 {
-                    carrier_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    carrier_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     first_name = table.Column<string>(type: "varchar(250)", nullable: false),
                     last_name = table.Column<string>(type: "varchar(250)", nullable: false),
                     email = table.Column<string>(type: "varchar(250)", nullable: false),
@@ -35,7 +35,7 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "customers",
                 columns: table => new
                 {
-                    customer_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    customer_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     first_name = table.Column<string>(type: "varchar(250)", nullable: false),
                     last_name = table.Column<string>(type: "varchar(250)", nullable: false),
                     email = table.Column<string>(type: "varchar(250)", nullable: false),
@@ -55,7 +55,7 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "parcels",
                 columns: table => new
                 {
-                    parcel_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    parcel_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     pickup_location = table.Column<string>(type: "varchar(250)", nullable: false),
                     delivery_location = table.Column<string>(type: "varchar(250)", nullable: false),
                     length = table.Column<float>(type: "real", nullable: false),
@@ -79,7 +79,7 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "quotes",
                 columns: table => new
                 {
-                    quote_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    quote_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     delivery_distance = table.Column<float>(type: "real", nullable: false),
                     price_per_km = table.Column<float>(type: "real", nullable: false),
                     total_price = table.Column<float>(type: "real", nullable: false),
@@ -108,7 +108,7 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "deliveries",
                 columns: table => new
                 {
-                    delivery_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    delivery_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     pickup_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     delivery_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     delivery_status = table.Column<string>(type: "varchar(250)", nullable: false),
@@ -129,7 +129,7 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                 name: "payments",
                 columns: table => new
                 {
-                    payment_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    payment_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     payment_method = table.Column<string>(type: "varchar(250)", nullable: false),
                     payment_status = table.Column<string>(type: "varchar(250)", nullable: false),
                     payment_amount = table.Column<float>(type: "real", nullable: false),

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MarteliveryAPI_DotNet8_v01.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231204182943_Initial")]
-    partial class Initial
+    [Migration("20231213200749_Génération de l'uuid par la db")]
+    partial class Générationdeluuidparladb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
