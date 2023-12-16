@@ -1,24 +1,18 @@
 ﻿using MarteliveryAPI_DotNet8_v01.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarteliveryAPI_DotNet8_v01.Data
 {
     //Add-Migration "Commentaire"
     //Update-Database
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext
     {
-        protected readonly IConfiguration Configuration;
-
-        public DataContext(IConfiguration configuration)
+        public DataContext(DbContextOptions<DataContext> options) : base(options) 
         {
-            Configuration = configuration;
+        
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            // connect to postgres with connection string from app settings
-            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-        }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Parcel> Parcels { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
