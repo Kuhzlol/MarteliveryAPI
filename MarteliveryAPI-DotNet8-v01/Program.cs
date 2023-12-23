@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // Configure Swagger to test the Authentication with JWT
+    // Configure Swagger to test the Authentication with Bearer Token
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Name = "Authorization",

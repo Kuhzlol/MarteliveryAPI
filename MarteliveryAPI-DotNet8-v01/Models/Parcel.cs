@@ -21,7 +21,7 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         public required float Weight { get; set; }
         [Column("customer_id", TypeName = "uuid")]
         public required Guid CustomerId { get; set; }
-        public required Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
         public List<Quote>? Quotes { get; set; }
     }
 }
