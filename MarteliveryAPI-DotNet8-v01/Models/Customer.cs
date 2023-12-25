@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarteliveryAPI_DotNet8_v01.Models
 {
@@ -11,31 +12,40 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         public Guid CustomerId { get; set; }
 
         [Column("first_name", TypeName = "varchar(250)")]
-        public required string FirstName { get; set; }
+        [Required]
+        public string? FirstName { get; set; }
 
         [Column("last_name", TypeName = "varchar(250)")]
-        public required string LastName { get; set; }
+        [Required]
+        public string? LastName { get; set; }
 
         [Column("email", TypeName = "varchar(250)")]
-        public required string Email { get; set; }
+        [Required]
+        public string? Email { get; set; }
 
         [Column("is_email_confirmed")]
-        public bool? IsEmailConfirmed { get; set; }
+        public bool? IsEmailConfirmed { get; set; } = false;
 
-        [Column("hashed_password", TypeName = "varchar(250)")]
-        public string? HashedPassword { get; set; }
+        [Column("password", TypeName = "varchar(250)")]
+        [Required]
+        public string? Password { get; set; }
 
         [Column("phone_number", TypeName = "varchar(250)")]
-        public required string PhoneNumber { get; set; }
+        [Required]
+        public string? PhoneNumber { get; set; }
 
         [Column("date_of_birth")]
-        public required DateOnly DateOfBirth { get; set; }
+        [Required]
+        public DateOnly DateOfBirth { get; set; }
 
         [Column("login_provider", TypeName = "varchar(250)")]
         public string? LoginProvider { get; set; }
 
         [Column("token", TypeName = "varchar(250)")]
         public string? Token { get; set; }
+
+        [Column("created_on")]
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
         public List<Parcel>? Parcels { get; set; }
         public List<CarrierRating>? CarrierRatings { get; set; }

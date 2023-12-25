@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.ValueGeneration;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarteliveryAPI_DotNet8_v01.Models
@@ -8,15 +9,22 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     {
         [Column("delivery_id", TypeName = "uuid")]
         public Guid DeliveryId { get; set; }
+
         [Column("pickup_time")]
-        public required DateTime PickupTime { get; set; }
+        public DateTime? PickupTime { get; set; } = DateTime.UtcNow;
+
         [Column("delivery_time")]
-        public required DateTime DeliveryTime { get; set; }
+        public DateTime? DeliveryTime { get; set; }
+
         [Column("delivery_status", TypeName = "varchar(250)")]
-        public required string DeliveryStatus { get; set; }
+        public string? DeliveryStatus { get; set; } = "Pending";
+
         [Column("quote_id", TypeName = "uuid")]
-        public required Guid QuoteId { get; set; }
+        [Required]
+        public Guid QuoteId { get; set; }
+
         public required Quote Quote { get; set; }
+
         public List<CarrierRating>? CarrierRatings { get; set; }
     }
 }
