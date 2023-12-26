@@ -15,6 +15,8 @@ namespace MarteliveryAPI_DotNet8_v01.Models
 
         [Required]
         [DataType(DataType.Password)]
+        [MinLength(8)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$")]
         public string Password { get; set; }
     }
 }
