@@ -13,26 +13,29 @@ namespace MarteliveryAPI_DotNet8_v01.Models
 
         [Column("first_name", TypeName = "varchar(250)")]
         [Required]
-        public string? FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Column("last_name", TypeName = "varchar(250)")]
         [Required]
-        public string? LastName { get; set; }
+        public required string LastName { get; set; }
 
         [Column("email", TypeName = "varchar(250)")]
         [Required]
-        public string? Email { get; set; }
+        [EmailAddress]
+        [DataType(DataType.EmailAddress)]
+        public required string Email { get; set; }
 
         [Column("is_email_confirmed")]
         public bool? IsEmailConfirmed { get; set; } = false;
 
         [Column("password", TypeName = "varchar(250)")]
         [Required]
-        public string? Password { get; set; }
+        [DataType(DataType.Password)]
+        public required string Password { get; set; }
 
         [Column("phone_number", TypeName = "varchar(250)")]
         [Required]
-        public string? PhoneNumber { get; set; }
+        public required string PhoneNumber { get; set; }
 
         [Column("date_of_birth")]
         [Required]
