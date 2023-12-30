@@ -24,9 +24,8 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Carrier", b =>
                 {
-                    b.Property<Guid>("CarrierId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("CarrierId")
+                        .HasColumnType("text")
                         .HasColumnName("carrier_id");
 
                     b.Property<DateOnly>("DateOfBirth")
@@ -76,12 +75,12 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.CarrierRating", b =>
                 {
-                    b.Property<Guid>("DeliveryId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("DeliveryId")
+                        .HasColumnType("text")
                         .HasColumnName("delivery_id");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("text")
                         .HasColumnName("customer_id");
 
                     b.Property<int>("CarrierRate")
@@ -97,9 +96,8 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Customer", b =>
                 {
-                    b.Property<Guid>("CustomerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("text")
                         .HasColumnName("customer_id");
 
                     b.Property<DateTime>("CreatedOn")
@@ -154,9 +152,8 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Delivery", b =>
                 {
-                    b.Property<Guid>("DeliveryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("DeliveryId")
+                        .HasColumnType("text")
                         .HasColumnName("delivery_id");
 
                     b.Property<string>("DeliveryStatus")
@@ -171,8 +168,9 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("pickup_time");
 
-                    b.Property<Guid>("QuoteId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("QuoteId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("quote_id");
 
                     b.HasKey("DeliveryId");
@@ -184,13 +182,13 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Parcel", b =>
                 {
-                    b.Property<Guid>("ParcelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("ParcelId")
+                        .HasColumnType("text")
                         .HasColumnName("parcel_id");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("customer_id");
 
                     b.Property<string>("DeliveryLocation")
@@ -228,9 +226,8 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Payment", b =>
                 {
-                    b.Property<Guid>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("text")
                         .HasColumnName("payment_id");
 
                     b.Property<float>("PaymentAmount")
@@ -251,8 +248,9 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("payment_time");
 
-                    b.Property<Guid>("QuoteId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("QuoteId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("quote_id");
 
                     b.HasKey("PaymentId");
@@ -264,21 +262,22 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Quote", b =>
                 {
-                    b.Property<Guid>("QuoteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                    b.Property<string>("QuoteId")
+                        .HasColumnType("text")
                         .HasColumnName("quote_id");
 
-                    b.Property<Guid>("CarrierId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("CarrierId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("carrier_id");
 
                     b.Property<float>("DeliveryDistance")
                         .HasColumnType("real")
                         .HasColumnName("delivery_distance");
 
-                    b.Property<Guid>("ParcelId")
-                        .HasColumnType("uuid")
+                    b.Property<string>("ParcelId")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("parcel_id");
 
                     b.Property<float>("PricePerKm")
@@ -308,6 +307,10 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date")
+                        .HasColumnName("date_of_birth");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -319,202 +322,6 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("test_users");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.CarrierRating", b =>
@@ -586,57 +393,6 @@ namespace MarteliveryAPI_DotNet8_v01.Migrations
                     b.Navigation("Carrier");
 
                     b.Navigation("Parcel");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MarteliveryAPI_DotNet8_v01.Models.Carrier", b =>

@@ -6,10 +6,8 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     [Table("customers")]
     public class Customer
     {
-        //defaultValueSql: "gen_random_uuid()"
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("customer_id", TypeName = "uuid")]
-        public Guid CustomerId { get; set; }
+        [Column("customer_id")]
+        public string CustomerId { get; set; } = Guid.NewGuid().ToString();
 
         [Column("first_name", TypeName = "varchar(250)")]
         [Required]
@@ -31,6 +29,9 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("password", TypeName = "varchar(250)")]
         [Required]
         [DataType(DataType.Password)]
+        [MinLength(14)]
+        // Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$")]
         public required string Password { get; set; }
 
         [Column("phone_number", TypeName = "varchar(250)")]

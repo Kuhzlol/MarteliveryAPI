@@ -42,12 +42,18 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         public async Task<ActionResult<TestUser>> Register(TestUser testUser)
         {
             var findTestUser = await _context.TestUsers.FirstOrDefaultAsync(x => x.Email.ToLower() == testUser.Email.ToLower());
+            
+
             if (findTestUser == null)
             {
+                if (testUser.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || testUser.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
+                    return BadRequest("Invalid date of birth");
+
                 _context.TestUsers.Add(new TestUser()
                 {
                     Email = testUser.Email,
-                    Password = BCrypt.Net.BCrypt.EnhancedHashPassword(testUser.Password)
+                    Password = BCrypt.Net.BCrypt.EnhancedHashPassword(testUser.Password),
+                    DateOfBirth = testUser.DateOfBirth
                 });
                 await _context.SaveChangesAsync();
                 return Ok("User registered successfully");

@@ -7,8 +7,8 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     [Table("deliveries")]
     public class Delivery
     {
-        [Column("delivery_id", TypeName = "uuid")]
-        public Guid DeliveryId { get; set; }
+        [Column("delivery_id")]
+        public string DeliveryId { get; set; } = Guid.NewGuid().ToString();
 
         [Column("pickup_time")]
         public DateTime? PickupTime { get; set; } = DateTime.UtcNow;
@@ -19,10 +19,9 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("delivery_status", TypeName = "varchar(250)")]
         public string? DeliveryStatus { get; set; } = "Pending";
 
-        [Column("quote_id", TypeName = "uuid")]
+        [Column("quote_id")]
         [Required]
-        public Guid QuoteId { get; set; }
-
+        public required string QuoteId { get; set; }
         public required Quote Quote { get; set; }
 
         public List<CarrierRating>? CarrierRatings { get; set; }

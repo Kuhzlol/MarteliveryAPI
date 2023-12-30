@@ -6,7 +6,7 @@ namespace MarteliveryAPI_DotNet8_v01.Data
 {
     //Add-Migration "Commentaire"
     //Update-Database
-    public class DataContext : IdentityDbContext
+    public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) 
         {

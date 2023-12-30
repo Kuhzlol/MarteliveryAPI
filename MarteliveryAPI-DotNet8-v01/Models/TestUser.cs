@@ -11,12 +11,17 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Required]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [MinLength(8)]
+        // Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$")]
-        public string Password { get; set; }
+        public required string Password { get; set; }
+
+        [Column("date_of_birth")]
+        [Required]
+        public DateOnly DateOfBirth { get; set; }
     }
 }

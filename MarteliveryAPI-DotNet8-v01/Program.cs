@@ -30,8 +30,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<DataContext>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,7 +39,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapIdentityApi<IdentityUser>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
