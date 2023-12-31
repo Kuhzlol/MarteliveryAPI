@@ -21,6 +21,5 @@ namespace MarteliveryAPI_DotNet8_v01.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<CarrierRating> CarrierRatings { get; set; }
         public DbSet<TestUser> TestUsers { get; set; }
-
     }
 }
