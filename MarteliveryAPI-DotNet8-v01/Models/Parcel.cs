@@ -14,6 +14,9 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("delivery_location", TypeName = "varchar(250)")]
         public required string DeliveryLocation { get; set; }
 
+        [Column ("total_distance", TypeName = "float")]
+        public required float TotalDistance { get; set; }
+
         [Column("length")]
         public required float Length { get; set; }
 

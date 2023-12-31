@@ -8,9 +8,6 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("quote_id")]
         public string QuoteId { get; set; } = Guid.NewGuid().ToString();
 
-        [Column("delivery_distance")]
-        public required float DeliveryDistance { get; set; }
-
         [Column("price_per_km")]
         public required float PricePerKm { get; set; }
 
