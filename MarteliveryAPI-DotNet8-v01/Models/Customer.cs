@@ -29,9 +29,9 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("password", TypeName = "varchar(250)")]
         [Required]
         [DataType(DataType.Password)]
-        [MinLength(14)]
+        [MinLength(10)]
         // Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{10,}$")]
         public required string Password { get; set; }
 
         [Column("phone_number", TypeName = "varchar(250)")]

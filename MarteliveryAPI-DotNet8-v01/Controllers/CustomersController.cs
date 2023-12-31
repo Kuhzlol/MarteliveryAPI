@@ -28,7 +28,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpGet("User/{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(Guid id)
+        public async Task<ActionResult<Customer>> GetCustomer(string id)
         {
             var customer = await _context.Customers.FindAsync(id);
 
@@ -45,9 +45,11 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             
             if (findCustomer == null)
             {
-                //verify that the date of birth is not in the future and that the user is at least 18 years old
+                //Verify that the date of birth is not in the future and that the user is at least 18 years old
                 if (customer.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || customer.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
                     return BadRequest("Invalid date of birth");
+
+                //Verify that Password contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character
 
                 _context.Customers.Add(new Customer(){
                     FirstName = customer.FirstName,
@@ -68,7 +70,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpPut("UpdateUser/{id}")]
-        public async Task<ActionResult<Customer>> UpdateCustomer(Guid id, Customer customer)
+        public async Task<ActionResult<Customer>> UpdateCustomer(string id, Customer customer)
         {
             var customerToUpdate = await _context.Customers.FindAsync(id);
 
@@ -110,7 +112,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpDelete("DeleteUser/{id}")]
-        public async Task<ActionResult<Customer>> DeleteCustomer(Guid id)
+        public async Task<ActionResult<Customer>> DeleteCustomer(string id)
         {
             var customerToDelete = await _context.Customers.FindAsync(id);
 
