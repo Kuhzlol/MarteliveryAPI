@@ -33,6 +33,29 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok(quote);
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Quote>> CreateQuote(Quote quote)
+        {
+            _context.Quotes.Add(quote);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (QuoteExists(quote.QuoteId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetQuote", new { id = quote.QuoteId }, quote);
+        }
+
         [HttpPut("UpdateQuote/{id}")]
         public async Task<ActionResult> UpdateQuote(string id, Quote quote)
         {
@@ -60,29 +83,6 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             }
 
             return NoContent();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<Quote>> CreateQuote(Quote quote)
-        {
-            _context.Quotes.Add(quote);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (QuoteExists(quote.QuoteId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetQuote", new { id = quote.QuoteId }, quote);
         }
 
         [HttpDelete("{id}")]
