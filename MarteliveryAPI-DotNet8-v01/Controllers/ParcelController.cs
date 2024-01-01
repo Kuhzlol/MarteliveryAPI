@@ -7,16 +7,16 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ParcelsController : ControllerBase
+    public class ParcelController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public ParcelsController(DataContext context)
+        public ParcelController(DataContext context)
         {
             _context = context;
         }
 
-        [HttpGet (Name = "GetParcels")]
+        [HttpGet ("GetParcels")]
         public async Task<ActionResult<List<Parcel>>> GetParcels()
         {
             var parcels = await _context.Parcels.ToListAsync();
@@ -27,7 +27,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok(parcels);
         }
 
-        [HttpGet ("{id}", Name = "GetParcel")]
+        [HttpGet ("GetParcel/{id}")]
         public async Task<ActionResult<Parcel>> GetParcel(Guid id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
@@ -38,7 +38,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok(parcel);
         }
 
-        [HttpPost (Name = "AddParcel")]
+        [HttpPost ("AddParcel")]
         public async Task<ActionResult<Parcel>> AddParcel(Parcel parcel)
         {
             _context.Parcels.Add(parcel);
@@ -47,7 +47,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok("Parcel added");
         }
 
-        [HttpPut("{id}", Name = "UpdateParcel")]
+        [HttpPut ("UpdateParcel/{id}")]
         public async Task<IActionResult> UpdateParcel(Guid id, Parcel parcel)
         {
             var parcelToUpdate = await _context.Parcels.FindAsync(id);
@@ -98,7 +98,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             }
         }
 
-        [HttpDelete("{id}", Name = "DeleteParcel")]
+        [HttpDelete ("DeleteParcel/{id}")]
         public async Task<ActionResult> DeleteParcel(Guid id)
         {
             var parcel = await _context.Parcels.FindAsync(id);

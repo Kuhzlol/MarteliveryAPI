@@ -31,7 +31,8 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [DataType(DataType.Password)]
         [MinLength(10)]
         // Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{10,}$")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{10,}$", 
+            ErrorMessage = "Invalid password, the password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character")]
         public required string Password { get; set; }
 
         [Column("phone_number", TypeName = "varchar(250)")]

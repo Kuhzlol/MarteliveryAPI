@@ -1,4 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using MarteliveryAPI_DotNet8_v01.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MarteliveryAPI_DotNet8_v01.Models
 {

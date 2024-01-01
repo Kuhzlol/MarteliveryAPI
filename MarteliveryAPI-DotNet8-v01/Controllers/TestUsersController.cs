@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MarteliveryAPI_DotNet8_v01.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TestUsersController : Controller
     {
