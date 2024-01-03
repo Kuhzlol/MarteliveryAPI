@@ -19,6 +19,11 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         [HttpGet ("GetQuotes")]
         public async Task<ActionResult<List<Quote>>> GetQuotes()
         {
+            var quotes = await _context.Quotes.ToListAsync();
+
+            if (quotes.Count == 0)
+                return NotFound("Quotes not found");
+            
             return await _context.Quotes.ToListAsync();
         }
 

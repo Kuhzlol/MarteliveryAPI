@@ -21,7 +21,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         {
             var customers = await _context.Customers.ToListAsync();
 
-            if (customers == null)
+            if (customers.Count == 0)
                 return NotFound("Users not found");
 
             return Ok(customers);
