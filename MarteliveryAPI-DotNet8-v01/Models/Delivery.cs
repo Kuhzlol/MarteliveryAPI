@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ValueGeneration;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarteliveryAPI_DotNet8_v01.Models
@@ -7,6 +6,7 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     [Table("deliveries")]
     public class Delivery
     {
+        [Key]
         [Column("delivery_id")]
         public string DeliveryId { get; set; } = Guid.NewGuid().ToString();
 

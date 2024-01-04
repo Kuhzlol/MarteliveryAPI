@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarteliveryAPI_DotNet8_v01.Models
 {
     [Table("payments")]
     public class Payment
     {
+        [Key]
         [Column("payment_id")]
         public string PaymentId { get; set; } = Guid.NewGuid().ToString();
 

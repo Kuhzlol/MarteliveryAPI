@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarteliveryAPI_DotNet8_v01.Models
 {
     [Table("parcels")]
     public class Parcel
     {
+        [Key]
         [Column("parcel_id")]
         public string ParcelId { get; set; } = Guid.NewGuid().ToString();
 

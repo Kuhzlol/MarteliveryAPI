@@ -6,6 +6,7 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     [Table("customers")]
     public class Customer
     {
+        [Key]
         [Column("customer_id")]
         public string CustomerId { get; set; } = Guid.NewGuid().ToString();
 

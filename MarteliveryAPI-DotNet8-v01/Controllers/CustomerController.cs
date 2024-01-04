@@ -5,19 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MarteliveryAPI_DotNet8_v01.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController(DataContext context) : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly DataContext _context = context;
 
-        public CustomerController(DataContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet ("GetCustomers")]
-        public async Task<ActionResult<List<Customer>>> GetCustomers()
+        [HttpGet ("GetCustomersInfo")]
+        public async Task<ActionResult<List<Customer>>> GetCustomersInfo()
         {
             var customers = await _context.Customers.ToListAsync();
 
@@ -27,8 +22,8 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok(customers);
         }
 
-        [HttpGet("GetCustomer/{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(string id)
+        [HttpGet("GetCustomerInfo/{id}")]
+        public async Task<ActionResult<Customer>> GetCustomerInfo(string id)
         {
             var customer = await _context.Customers.FindAsync(id);
 

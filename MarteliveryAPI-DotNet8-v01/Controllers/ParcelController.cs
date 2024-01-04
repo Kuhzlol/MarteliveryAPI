@@ -5,30 +5,25 @@ using MarteliveryAPI_DotNet8_v01.Models;
 
 namespace MarteliveryAPI_DotNet8_v01.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class ParcelController : ControllerBase
+    public class ParcelController(DataContext context) : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly DataContext _context = context;
 
-        public ParcelController(DataContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet ("GetParcels")]
-        public async Task<ActionResult<List<Parcel>>> GetParcels()
+        [HttpGet ("GetParcelsInfo")]
+        public async Task<ActionResult<List<Parcel>>> GetParcelsInfo()
         {
             var parcels = await _context.Parcels.ToListAsync();
 
-            if (parcels == null)
+            if (parcels.Count == 0)
                 return NotFound("Parcels not found");
 
             return Ok(parcels);
         }
 
-        [HttpGet ("GetParcel/{id}")]
-        public async Task<ActionResult<Parcel>> GetParcel(Guid id)
+        [HttpGet ("GetParcelInfo/{id}")]
+        public async Task<ActionResult<Parcel>> GetParcelInfo(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
 
@@ -38,13 +33,13 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok(parcel);
         }
 
-        [HttpPost ("AddParcel")]
-        public async Task<ActionResult<Parcel>> AddParcel(Parcel parcel)
+        [HttpPost ("CreateParcel")]
+        public async Task<ActionResult<Parcel>> CreateParcel(Parcel parcel)
         {
             _context.Parcels.Add(parcel);
             await _context.SaveChangesAsync();
 
-            return Ok("Parcel added");
+            return Ok("Parcel created");
         }
 
         [HttpPut ("UpdateParcel/{id}")]
@@ -99,7 +94,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpDelete ("DeleteParcel/{id}")]
-        public async Task<ActionResult> DeleteParcel(Guid id)
+        public async Task<ActionResult> DeleteParcel(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
             

@@ -5,30 +5,25 @@ using MarteliveryAPI_DotNet8_v01.Models;
 
 namespace MarteliveryAPI_DotNet8_v01.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class QuoteController : ControllerBase
+    public class QuoteController(DataContext context) : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly DataContext _context = context;
 
-        public QuoteController(DataContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet ("GetQuotes")]
-        public async Task<ActionResult<List<Quote>>> GetQuotes()
+        [HttpGet ("GetQuotesInfo")]
+        public async Task<ActionResult<List<Quote>>> GetQuotesInfo()
         {
             var quotes = await _context.Quotes.ToListAsync();
 
             if (quotes.Count == 0)
                 return NotFound("Quotes not found");
             
-            return await _context.Quotes.ToListAsync();
+            return Ok(quotes);
         }
 
         [HttpGet("GetQuote/{id}")]
-        public async Task<ActionResult<Quote>> GetQuote(string id)
+        public async Task<ActionResult<Quote>> GetQuoteInfo(string id)
         {
             var quote = await _context.Quotes.FindAsync(id);
 
@@ -38,76 +33,62 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok(quote);
         }
 
-        [HttpPost]
+        [HttpPost ("CreateQuote")]
         public async Task<ActionResult<Quote>> CreateQuote(Quote quote)
         {
             _context.Quotes.Add(quote);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (QuoteExists(quote.QuoteId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetQuote", new { id = quote.QuoteId }, quote);
+            return Ok("Quote created");
         }
 
         [HttpPut("UpdateQuote/{id}")]
         public async Task<ActionResult> UpdateQuote(string id, Quote quote)
         {
-            if (id != quote.QuoteId)
+            var quoteToUpdate = await _context.Quotes.FindAsync(id);
+
+            if (quoteToUpdate == null)
+                return NotFound("Quote not found");
+
+            bool isUpdated = false;
+            if (quoteToUpdate.PricePerKm != quote.PricePerKm)
             {
-                return BadRequest();
+                quoteToUpdate.PricePerKm = quote.PricePerKm;
+                isUpdated = true;
+            }
+            if (quoteToUpdate.TotalPrice != quote.TotalPrice)
+            {
+                quoteToUpdate.TotalPrice = quote.TotalPrice;
+                isUpdated = true;
+            }
+            if (quoteToUpdate.Status != quote.Status)
+            {
+                quoteToUpdate.Status = quote.Status;
+                isUpdated = true;
             }
 
-            _context.Entry(quote).State = EntityState.Modified;
-
-            try
+            if (isUpdated)
             {
                 await _context.SaveChangesAsync();
+                return Ok("Quote updated");
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!QuoteExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Ok("No changes were made to the quote");
             }
-
-            return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteQuote{id}")]
         public async Task<IActionResult> DeleteQuote(string id)
         {
             var quote = await _context.Quotes.FindAsync(id);
             if (quote == null)
-            {
-                return NotFound();
-            }
+                return NotFound("Quote not found");
 
             _context.Quotes.Remove(quote);
             await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
-
-        private bool QuoteExists(string id)
-        {
-            return _context.Quotes.Any(e => e.QuoteId == id);
+            return Ok("Quote deleted");
         }
     }
 }

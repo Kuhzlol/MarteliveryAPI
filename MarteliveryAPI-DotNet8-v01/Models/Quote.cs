@@ -1,14 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using MarteliveryAPI_DotNet8_v01.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.ComponentModel.DataAnnotations;
 
 namespace MarteliveryAPI_DotNet8_v01.Models
 {
     [Table("quotes")]
     public class Quote
     {
+        [Key]
         [Column("quote_id")]
         public string QuoteId { get; set; } = Guid.NewGuid().ToString();
 
