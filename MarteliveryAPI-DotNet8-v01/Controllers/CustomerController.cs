@@ -71,29 +71,29 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
                 return NotFound("Customer not found");
 
             // Compare updated customer data with original customer data
-            bool isModified = false;
+            bool isUpdated = false;
             if (customerToUpdate.FirstName != customer.FirstName)
             {
-                isModified = true;
+                isUpdated = true;
                 customerToUpdate.FirstName = customer.FirstName;
             }
             if (customerToUpdate.LastName != customer.LastName)
             {
-                isModified = true;
+                isUpdated = true;
                 customerToUpdate.LastName = customer.LastName;
             }
             if (customerToUpdate.Email != customer.Email)
             {
-                isModified = true;
+                isUpdated = true;
                 customerToUpdate.Email = customer.Email;
             }
             if (customerToUpdate.PhoneNumber != customer.PhoneNumber)
             {
-                isModified = true;
+                isUpdated = true;
                 customerToUpdate.PhoneNumber = customer.PhoneNumber;
             }
 
-            if (isModified)
+            if (isUpdated)
             {
                 await _context.SaveChangesAsync();
                 return Ok("Customer updated");
