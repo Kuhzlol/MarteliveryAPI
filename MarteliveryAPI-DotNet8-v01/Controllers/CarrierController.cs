@@ -45,7 +45,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         [HttpPut ("UpdateCarrier/{id}")]
         public async Task<ActionResult<Carrier>> UpdateCarrier(Carrier carrier)
         {
-            var carrierToUpdate = await _context.Carriers.FindAsync(carrier.Id);
+            var carrierToUpdate = await _context.Carriers.FindAsync(carrier.CarrierId);
 
             if (carrierToUpdate == null)
                 return NotFound("Carrier not found");
