@@ -22,10 +22,10 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok(carrierRatings);
         }
 
-        [HttpGet("GetCarrierRating/{id1, id2}")]
-        public async Task<ActionResult<CarrierRating>> GetCarrierRatingInfo(string id1, string id2)
+        [HttpGet("GetCarrierRating/{id}")]
+        public async Task<ActionResult<CarrierRating>> GetCarrierRatingInfo(string id)
         {
-            var carrierRating = await _context.CarrierRatings.FindAsync(id1, id2);
+            var carrierRating = await _context.CarrierRatings.FindAsync(id);
 
             if (carrierRating == null)
                 return NotFound("Carrier rating not found");
@@ -36,16 +36,21 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         [HttpPost ("CreateCarrierRating")]
         public async Task<ActionResult<CarrierRating>> CreateCarrierRating(CarrierRating carrierRating)
         {
-            _context.CarrierRatings.Add(carrierRating);
+            _context.CarrierRatings.Add(new CarrierRating
+            {
+                CustomerId = carrierRating.CustomerId,
+                DeliveryId = carrierRating.DeliveryId,
+                CarrierRate = carrierRating.CarrierRate
+            });
             await _context.SaveChangesAsync();
 
             return Ok("Carrier rating created");
         }
 
-        [HttpPut("UpdateCarrierRating/{id1, id2}")]
-        public async Task<ActionResult> UpdateCarrierRating(string id1, string id2, CarrierRating carrierRating)
+        [HttpPut("UpdateCarrierRating/{id}")]
+        public async Task<ActionResult> UpdateCarrierRating(string id, CarrierRating carrierRating)
         {
-            var carrierRatingToUpdate = await _context.CarrierRatings.FindAsync(id1, id2);
+            var carrierRatingToUpdate = await _context.CarrierRatings.FindAsync(id);
 
             if (carrierRatingToUpdate == null)
                 return NotFound("Carrier rating not found");
@@ -65,10 +70,10 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             return Ok("Carrier rating updated");
         }
 
-        [HttpDelete("DeleteCarrierRating/{id1, id2}")]
-        public async Task<ActionResult> DeleteCarrierRating(string id1, string id2)
+        [HttpDelete("DeleteCarrierRating/{id}")]
+        public async Task<ActionResult> DeleteCarrierRating(string id)
         {
-            var carrierRatingToDelete = await _context.CarrierRatings.FindAsync(id1, id2);
+            var carrierRatingToDelete = await _context.CarrierRatings.FindAsync(id);
 
             if (carrierRatingToDelete == null)
                 return NotFound("Carrier rating not found");

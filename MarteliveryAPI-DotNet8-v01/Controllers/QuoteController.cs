@@ -40,7 +40,6 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             {
                 PricePerKm = quote.PricePerKm,
                 TotalPrice = quote.TotalPrice,
-                Status = quote.Status,
                 CarrierId = quote.CarrierId,
                 ParcelId = quote.ParcelId
             });

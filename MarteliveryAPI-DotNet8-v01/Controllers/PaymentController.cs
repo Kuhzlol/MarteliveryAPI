@@ -78,7 +78,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpDelete ("DeletePayment/{id}")]
-        public async Task<IActionResult> DeletePayment(Guid id)
+        public async Task<IActionResult> DeletePayment(string id)
         {
             var paymentToDelete = await _context.Payments.FindAsync(id);
 

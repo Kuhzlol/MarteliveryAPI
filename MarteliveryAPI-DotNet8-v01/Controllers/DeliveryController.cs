@@ -36,14 +36,18 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         [HttpPost ("CreateDelivery")]
         public async Task<ActionResult<Delivery>> CreateDelivery(Delivery delivery)
         {
-            _context.Deliveries.Add(delivery);
+            _context.Deliveries.Add(new Delivery()
+            {
+                DeliveryTime = delivery.DeliveryTime,
+                QuoteId = delivery.QuoteId
+            });
             await _context.SaveChangesAsync();
 
             return Ok("Delivery created");
         }
 
         [HttpPut ("UpdateDelivery/{id}")]
-        public async Task<IActionResult> UpdateDelivery(Guid id, Delivery delivery)
+        public async Task<IActionResult> UpdateDelivery(string id, Delivery delivery)
         {
             var deliveryToUpdate = await _context.Deliveries.FindAsync(id);
 

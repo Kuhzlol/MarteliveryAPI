@@ -17,7 +17,7 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         public required float TotalPrice { get; set; }
 
         [Column("status", TypeName = "varchar(250)")]
-        public required string Status { get; set; } = "Pending";
+        public string? Status { get; set; } = "Pending";
 
         [Column("carrier_id")]
         public required string CarrierId { get; set; }
