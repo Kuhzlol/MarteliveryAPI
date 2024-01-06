@@ -44,7 +44,8 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
                 if (customer.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || customer.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
                     return BadRequest("Invalid date of birth");
 
-                _context.Customers.Add(new Customer(){
+                _context.Customers.Add(new Customer()
+                {
                     FirstName = customer.FirstName,
                     LastName = customer.LastName,
                     Email = customer.Email,
