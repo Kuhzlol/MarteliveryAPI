@@ -22,7 +22,7 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         [Column("quote_id")]
         [Required]
         public required string QuoteId { get; set; }
-        public required Quote Quote { get; set; }
+        public Quote? Quote { get; set; }
 
         public List<CarrierRating>? CarrierRatings { get; set; }
     }

@@ -17,15 +17,15 @@ namespace MarteliveryAPI_DotNet8_v01.Models
         public required float TotalPrice { get; set; }
 
         [Column("status", TypeName = "varchar(250)")]
-        public required string Status { get; set; }
+        public required string Status { get; set; } = "Pending";
 
         [Column("carrier_id")]
         public required string CarrierId { get; set; }
-        public required Carrier Carrier { get; set; }
+        public Carrier? Carrier { get; set; }
 
         [Column("parcel_id")]
         public required string ParcelId { get; set; }
-        public required Parcel Parcel { get; set; }
+        public Parcel? Parcel { get; set; }
 
         public List<Delivery>? Deliveries { get; set; }
 

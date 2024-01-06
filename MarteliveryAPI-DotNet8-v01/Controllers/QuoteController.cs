@@ -35,15 +35,13 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
 
         [HttpPost ("CreateQuote")]
         public async Task<ActionResult<Quote>> CreateQuote(Quote quote)
-        {
+        {            
             _context.Quotes.Add(new Quote()
             {
                 PricePerKm = quote.PricePerKm,
-                TotalPrice = quote.PricePerKm * quote.Parcel.TotalDistance,
+                TotalPrice = quote.TotalPrice,
                 Status = quote.Status,
-                Carrier = quote.Carrier,
                 CarrierId = quote.CarrierId,
-                Parcel = quote.Parcel,
                 ParcelId = quote.ParcelId
             });
             await _context.SaveChangesAsync();

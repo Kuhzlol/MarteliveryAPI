@@ -23,7 +23,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpGet ("GetParcelInfo/{id}")]
-        public async Task<ActionResult<Parcel>> GetParcelInfo(string id)
+        public async Task<IActionResult> GetParcelInfo(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
 
@@ -34,16 +34,26 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpPost ("CreateParcel")]
-        public async Task<ActionResult<Parcel>> CreateParcel(Parcel parcel)
+        public async Task<IActionResult> CreateParcel(Parcel parcel)
         {
-            _context.Parcels.Add(parcel);
+            _context.Parcels.Add(new Parcel() 
+            {
+                PickupLocation = parcel.PickupLocation,
+                DeliveryLocation = parcel.DeliveryLocation,
+                TotalDistance = parcel.TotalDistance,
+                Length = parcel.Length,
+                Width = parcel.Width,
+                Height = parcel.Height,
+                Weight = parcel.Weight,
+                CustomerId = parcel.CustomerId
+            });
             await _context.SaveChangesAsync();
 
             return Ok("Parcel created");
         }
 
         [HttpPut ("UpdateParcel/{id}")]
-        public async Task<IActionResult> UpdateParcel(Guid id, Parcel parcel)
+        public async Task<IActionResult> UpdateParcel(string id, Parcel parcel)
         {
             var parcelToUpdate = await _context.Parcels.FindAsync(id);
 
@@ -59,6 +69,11 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
             if (parcelToUpdate.DeliveryLocation != parcel.DeliveryLocation)
             {
                 parcelToUpdate.DeliveryLocation = parcel.DeliveryLocation;
+                isUpdated = true;
+            }
+            if (parcelToUpdate.TotalDistance != parcel.TotalDistance)
+            {
+                parcelToUpdate.TotalDistance = parcel.TotalDistance;
                 isUpdated = true;
             }
             if (parcelToUpdate.Length != parcel.Length)
@@ -94,7 +109,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpDelete ("DeleteParcel/{id}")]
-        public async Task<ActionResult> DeleteParcel(string id)
+        public async Task<IActionResult> DeleteParcel(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
             

@@ -10,11 +10,11 @@ namespace MarteliveryAPI_DotNet8_v01.Models
     {
         [Column("delivery_id")]
         public required string DeliveryId { get; set; }
-        public required Delivery Delivery { get; set; }
+        public Delivery? Delivery { get; set; }
 
         [Column("customer_id")]
         public required string CustomerId { get; set; }
-        public required Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
 
         [Column("carrier_rate")]
         [Range(1, 5)]

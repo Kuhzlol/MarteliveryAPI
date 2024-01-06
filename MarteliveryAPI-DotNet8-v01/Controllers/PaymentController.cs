@@ -43,7 +43,7 @@ namespace MarteliveryAPI_DotNet8_v01.Controllers
         }
 
         [HttpPut ("UpdatePayment/{id}")]
-        public async Task<IActionResult> UpdatePayment(Guid id, Payment payment)
+        public async Task<IActionResult> UpdatePayment(string id, Payment payment)
         {
             var paymentToUpdate = await _context.Payments.FindAsync(id);
 
