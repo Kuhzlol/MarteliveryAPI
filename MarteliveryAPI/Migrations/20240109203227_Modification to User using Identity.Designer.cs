@@ -3,6 +3,7 @@ using System;
 using MarteliveryAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MarteliveryAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240109203227_Modification to User using Identity")]
+    partial class ModificationtoUserusingIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +73,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasKey("CarrierId");
 
-                    b.ToTable("carriers", (string)null);
+                    b.ToTable("carriers");
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.CarrierRating", b =>
@@ -99,7 +102,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("DeliveryId");
 
-                    b.ToTable("carrier_ratings", (string)null);
+                    b.ToTable("carrier_ratings");
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.Customer", b =>
@@ -155,7 +158,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("customers", (string)null);
+                    b.ToTable("customers");
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.Delivery", b =>
@@ -185,7 +188,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("QuoteId");
 
-                    b.ToTable("deliveries", (string)null);
+                    b.ToTable("deliveries");
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.Parcel", b =>
@@ -233,7 +236,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("parcels", (string)null);
+                    b.ToTable("parcels");
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.Payment", b =>
@@ -269,7 +272,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("QuoteId");
 
-                    b.ToTable("payments", (string)null);
+                    b.ToTable("payments");
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.Quote", b =>
@@ -306,7 +309,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("ParcelId");
 
-                    b.ToTable("quotes", (string)null);
+                    b.ToTable("quotes");
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.User", b =>
@@ -384,7 +387,7 @@ namespace MarteliveryAPI.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -410,7 +413,7 @@ namespace MarteliveryAPI.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("roles", (string)null);
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -435,7 +438,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("role_claims", (string)null);
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -460,7 +463,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("user_claims", (string)null);
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -482,7 +485,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("user_logins", (string)null);
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -497,7 +500,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("user_roles", (string)null);
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -516,7 +519,7 @@ namespace MarteliveryAPI.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("user_tokens", (string)null);
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("MarteliveryAPI.Models.CarrierRating", b =>
