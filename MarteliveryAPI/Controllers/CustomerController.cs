@@ -23,7 +23,7 @@ namespace MarteliveryAPI.Controllers
         }
 
         [HttpGet("GetCustomerInfo/{id}")]
-        public async Task<ActionResult<Customer>> GetCustomerInfo(string id)
+        public async Task<IActionResult> GetCustomerInfo(string id)
         {
             var customer = await _context.Customers.FindAsync(id);
 
@@ -34,7 +34,7 @@ namespace MarteliveryAPI.Controllers
         }
 
         [HttpPost ("Register")]
-        public async Task<ActionResult<Customer>> Register(Customer customer)
+        public async Task<IActionResult> Register(Customer customer)
         {
             var findCustomer = await _context.Customers.FirstOrDefaultAsync(x => x.Email.ToLower() == customer.Email.ToLower());
             
@@ -64,7 +64,7 @@ namespace MarteliveryAPI.Controllers
         }
 
         [HttpPut("UpdateCustomer/{id}")]
-        public async Task<ActionResult<Customer>> UpdateCustomer(string id, Customer customer)
+        public async Task<IActionResult> UpdateCustomer(string id, Customer customer)
         {
             var customerToUpdate = await _context.Customers.FindAsync(id);
 
@@ -106,7 +106,7 @@ namespace MarteliveryAPI.Controllers
         }
 
         [HttpDelete("DeleteCustomer/{id}")]
-        public async Task<ActionResult<Customer>> DeleteCustomer(string id)
+        public async Task<IActionResult> DeleteCustomer(string id)
         {
             var customerToDelete = await _context.Customers.FindAsync(id);
 

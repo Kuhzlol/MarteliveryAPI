@@ -19,11 +19,9 @@ builder.Services.AddSwaggerGen();
 
 var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
 var azureCredential = new DefaultAzureCredential();
-
 builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
 
 var cs = builder.Configuration.GetSection("MarteliveryDbContext").Value;
-
 builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(cs));
 
 builder.Services.AddAuthentication();
