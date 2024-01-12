@@ -1,6 +1,6 @@
 ﻿using MarteliveryAPI.DTOs;
+using MarteliveryAPI.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
-using SharedClassLibrary.Contracts;
 
 namespace MarteliveryAPI.Controllers
 {

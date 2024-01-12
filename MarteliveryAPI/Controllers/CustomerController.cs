@@ -21,9 +21,6 @@ namespace MarteliveryAPI.Controllers
             if (customers.Count == 0)
                 return NotFound("Users not found");
 
-            if (!User.IsInRole("Admin"))
-                return Unauthorized("You are not authorized to view this information");
-
             return Ok(customers);
         }
 
