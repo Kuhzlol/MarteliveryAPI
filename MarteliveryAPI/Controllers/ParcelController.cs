@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarteliveryAPI.Data;
-using MarteliveryAPI.Models;
+using MarteliveryAPI.Entities;
 
 namespace MarteliveryAPI.Controllers
 {

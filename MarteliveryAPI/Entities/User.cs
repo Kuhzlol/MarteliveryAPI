@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MarteliveryAPI.Models
+namespace MarteliveryAPI.Entities
 {
     [Table("users")]
     public class User : IdentityUser
@@ -19,6 +19,7 @@ namespace MarteliveryAPI.Models
 
         [PersonalData]
         [Required]
+        [DataType(DataType.Date)]
         public DateOnly DateOfBirth { get; set; }
 
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;

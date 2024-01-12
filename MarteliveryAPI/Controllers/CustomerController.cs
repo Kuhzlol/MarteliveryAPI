@@ -1,5 +1,6 @@
 ﻿using MarteliveryAPI.Data;
-using MarteliveryAPI.Models;
+using MarteliveryAPI.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +13,16 @@ namespace MarteliveryAPI.Controllers
         private readonly DataContext _context = context;
 
         [HttpGet ("GetCustomersInfo")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<Customer>>> GetCustomersInfo()
         {
             var customers = await _context.Customers.ToListAsync();
 
             if (customers.Count == 0)
                 return NotFound("Users not found");
+
+            if (!User.IsInRole("Admin"))
+                return Unauthorized("You are not authorized to view this information");
 
             return Ok(customers);
         }

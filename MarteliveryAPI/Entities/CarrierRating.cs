@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MarteliveryAPI.Models
+namespace MarteliveryAPI.Entities
 {
     [Table("carrier_ratings")]
     public class CarrierRating

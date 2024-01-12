@@ -1,4 +1,4 @@
-﻿using MarteliveryAPI.Models;
+﻿using MarteliveryAPI.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,13 +7,8 @@ namespace MarteliveryAPI.Data
 {
     //Add-Migration "Commentaire"
     //Update-Database
-    public class DataContext : IdentityDbContext<User>
+    public class DataContext(DbContextOptions options) : IdentityDbContext<User>(options)
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) 
-        {
-        
-        }
-
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Parcel> Parcels { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
