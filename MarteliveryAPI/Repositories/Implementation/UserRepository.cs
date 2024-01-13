@@ -64,13 +64,16 @@ namespace MarteliveryAPI.Repositories.Implementation
 
         public async Task<LoginResponse> LoginAccount(UserLoginDTO loginDTO)
         {
+            //Check if login container is empty
             if (loginDTO == null)
                 return new LoginResponse(false, null!, "Login container is empty");
 
+            //Check if email is valid
             var getUser = await userManager.FindByEmailAsync(loginDTO.Email);
             if (getUser is null)
                 return new LoginResponse(false, null!, "User not found");
 
+            //Check if password is valid
             bool checkUserPasswords = await userManager.CheckPasswordAsync(getUser, loginDTO.Password);
             if (!checkUserPasswords)
             {
@@ -84,12 +87,19 @@ namespace MarteliveryAPI.Repositories.Implementation
             if (checkUserLockout)
                 return new LoginResponse(false, null!, "User is locked out");
 
+            //Reset accessFailedCount if user successfully logged in
+            await userManager.ResetAccessFailedCountAsync(getUser);
+
+            //Get user role
             var getUserRole = await userManager.GetRolesAsync(getUser);
 
+            //Create user session
             var userSession = new UserSessionRepository(getUser.Id, getUser.FirstName, getUser.LastName, getUser.Email, getUserRole.First());
 
+            //Generate token
             string token = GenerateToken(userSession);
 
+            // Return token if login is successful
             return new LoginResponse(true, token!, "Login completed");
         }
 
