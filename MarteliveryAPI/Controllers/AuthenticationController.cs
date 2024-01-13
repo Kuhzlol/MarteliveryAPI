@@ -6,7 +6,7 @@ namespace MarteliveryAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AccountController(IUserRepository user) : ControllerBase
+    public class AuthenticationController(IUserRepository user) : ControllerBase
     {
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterDTO userDTO)

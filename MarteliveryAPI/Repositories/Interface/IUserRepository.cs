@@ -1,5 +1,5 @@
 ﻿using MarteliveryAPI.DTOs;
-using static MarteliveryAPI.DTOs.ServiceResponses;
+using static MarteliveryAPI.Services.ResponseService;
 
 namespace MarteliveryAPI.Repositories.Interface
 {

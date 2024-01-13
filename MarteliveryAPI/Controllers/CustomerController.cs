@@ -25,6 +25,7 @@ namespace MarteliveryAPI.Controllers
         }
 
         [HttpGet("GetCustomerInfo/{id}")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetCustomerInfo(string id)
         {
             var customer = await _context.Customers.FindAsync(id);

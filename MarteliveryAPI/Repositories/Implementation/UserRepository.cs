@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static MarteliveryAPI.DTOs.ServiceResponses;
+using static MarteliveryAPI.Services.ResponseService;
 
 namespace MarteliveryAPI.Repositories.Implementation
 {
@@ -16,6 +16,10 @@ namespace MarteliveryAPI.Repositories.Implementation
         {
             if (userDTO is null)
                 return new GeneralResponse(false, "Model is empty");
+
+            //Check that the date of birth is not in the future and that the user is at least 18 years old
+            if (userDTO.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || userDTO.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
+                return new GeneralResponse(false, "Invalid date of birth, user must have at least 18 years old");
 
             var newUser = new User()
             {
@@ -27,15 +31,17 @@ namespace MarteliveryAPI.Repositories.Implementation
                 UserName = userDTO.Email
             };
 
+            //Check if user already exists
             var user = await userManager.FindByEmailAsync(newUser.Email);
             if (user is not null)
                 return new GeneralResponse(false, "User already registered");
 
+            //Check if password is valid (contains at least 1 uppercase, 1 lowercase, 1 digit, 1 non-alphanumeric, and at least 8 characters)
             var createUser = await userManager.CreateAsync(newUser!, userDTO.Password);
             if (!createUser.Succeeded)
-                return new GeneralResponse(false, "Error occured.. please try again");
+                return new GeneralResponse(false, "Invalid password.. Password must contain at least 1 uppercase, 1 lowercase, 1 digit, 1 non-alphanumeric, and at least 8 characters. Please try again");
 
-            //Assign Default Role : Admin to first registered user; rest is user
+            //Assign Default Role : "Admin" to first registered user; rest are "User"
             var checkAdmin = await roleManager.FindByNameAsync("Admin");
             if (checkAdmin is null)
             {
@@ -67,18 +73,27 @@ namespace MarteliveryAPI.Repositories.Implementation
 
             bool checkUserPasswords = await userManager.CheckPasswordAsync(getUser, loginDTO.Password);
             if (!checkUserPasswords)
+            {
+                //Increment accessFailedCount if password is incorrect
+                await userManager.AccessFailedAsync(getUser);
                 return new LoginResponse(false, null!, "Invalid email/password");
+            }
+            
+            //Check if user is locked out
+            var checkUserLockout = await userManager.IsLockedOutAsync(getUser);
+            if (checkUserLockout)
+                return new LoginResponse(false, null!, "User is locked out");
 
             var getUserRole = await userManager.GetRolesAsync(getUser);
 
-            var userSession = new UserSession(getUser.Id, getUser.FirstName, getUser.LastName, getUser.Email, getUserRole.First());
+            var userSession = new UserSessionRepository(getUser.Id, getUser.FirstName, getUser.LastName, getUser.Email, getUserRole.First());
 
             string token = GenerateToken(userSession);
 
             return new LoginResponse(true, token!, "Login completed");
         }
 
-        private string GenerateToken(UserSession user)
+        private string GenerateToken(UserSessionRepository user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
 
@@ -97,7 +112,7 @@ namespace MarteliveryAPI.Repositories.Implementation
                 issuer: config["Jwt:Issuer"],
                 audience: config["Jwt:Audience"],
                 claims: userClaims,
-                expires: DateTime.Now.AddMinutes(5),
+                expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: credentials
                 );
 

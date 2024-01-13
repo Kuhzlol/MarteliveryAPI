@@ -30,12 +30,31 @@ builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
 var cs = builder.Configuration.GetSection("MarteliveryDbContext").Value;
 builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(cs));
 
-//use cors with any origin any method and any header
+//Add cors to allow any origin, any method and any header
 builder.Services.AddCors();
 
 //Add Identity & JWT Authentication
 //Identity
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    //Password Settings
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+
+    //Lockout Settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+    options.Lockout.MaxFailedAccessAttempts = 3;
+    options.Lockout.AllowedForNewUsers = true;
+
+    //User Settings
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+})
     .AddEntityFrameworkStores<DataContext>()
     .AddSignInManager()
     .AddRoles<IdentityRole>();
