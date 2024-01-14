@@ -15,9 +15,9 @@ namespace MarteliveryAPI.Entities
         public required string DeliveryId { get; set; }
         public Delivery? Delivery { get; set; }
 
-        [Column("customer_id")]
-        public required string CustomerId { get; set; }
-        public Customer? Customer { get; set; }
+        [Column("user_id")]
+        public required string UserId { get; set; }
+        public User? User { get; set; }
 
         [Column("carrier_rate")]
         [Range(1, 5)]

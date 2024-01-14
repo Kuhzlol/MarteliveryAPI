@@ -40,7 +40,7 @@ namespace MarteliveryAPI.Controllers
             {
                 PricePerKm = quote.PricePerKm,
                 TotalPrice = quote.TotalPrice,
-                CarrierId = quote.CarrierId,
+                UserId = quote.UserId,
                 ParcelId = quote.ParcelId
             });
             await _context.SaveChangesAsync();

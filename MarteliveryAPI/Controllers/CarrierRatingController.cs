@@ -38,7 +38,7 @@ namespace MarteliveryAPI.Controllers
         {
             _context.CarrierRatings.Add(new CarrierRating
             {
-                CustomerId = carrierRating.CustomerId,
+                UserId = carrierRating.UserId,
                 DeliveryId = carrierRating.DeliveryId,
                 CarrierRate = carrierRating.CarrierRate
             });

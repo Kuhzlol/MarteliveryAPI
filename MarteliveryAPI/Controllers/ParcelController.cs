@@ -45,7 +45,7 @@ namespace MarteliveryAPI.Controllers
                 Width = parcel.Width,
                 Height = parcel.Height,
                 Weight = parcel.Weight,
-                CustomerId = parcel.CustomerId
+                UserId = parcel.UserId
             });
             await _context.SaveChangesAsync();
 

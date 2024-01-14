@@ -19,9 +19,9 @@ namespace MarteliveryAPI.Entities
         [Column("status", TypeName = "varchar(250)")]
         public string? Status { get; set; } = "Pending";
 
-        [Column("carrier_id")]
-        public required string CarrierId { get; set; }
-        public Carrier? Carrier { get; set; }
+        [Column("user_id")]
+        public required string UserId { get; set; }
+        public User? User { get; set; }
 
         [Column("parcel_id")]
         public required string ParcelId { get; set; }

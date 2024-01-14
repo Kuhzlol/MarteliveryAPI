@@ -26,5 +26,9 @@ namespace MarteliveryAPI.Entities
 
         [Required]
         public bool IsCustomer { get; set; }
+
+        public List<Parcel>? Parcels { get; set; }
+        public List<CarrierRating>? CarrierRatings { get; set; }
+        public List<Quote>? Quotes { get; set; }
     }
 }

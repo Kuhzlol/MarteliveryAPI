@@ -31,9 +31,9 @@ namespace MarteliveryAPI.Entities
         [Column("weight")]
         public required float Weight { get; set; }
 
-        [Column("customer_id")]
-        public required string CustomerId { get; set; }
-        public Customer? Customer { get; set; }
+        [Column("user_id")]
+        public required string UserId { get; set; }
+        public User? User { get; set; }
 
         public List<Quote>? Quotes { get; set; }
     }
