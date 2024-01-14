@@ -1,8 +1,6 @@
 ﻿using MarteliveryAPI.Data;
 using MarteliveryAPI.Entities;
-using MarteliveryAPI.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -12,7 +10,7 @@ namespace MarteliveryAPI.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class UserController(DataContext context) : ControllerBase
+    public class UserAccountController(DataContext context) : ControllerBase
     {
         private readonly DataContext _context = context;
 
