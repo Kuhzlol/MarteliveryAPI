@@ -23,5 +23,8 @@ namespace MarteliveryAPI.Entities
         public DateOnly DateOfBirth { get; set; }
 
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        public bool IsCustomer { get; set; }
     }
 }

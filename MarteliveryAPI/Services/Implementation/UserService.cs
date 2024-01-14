@@ -1,25 +1,22 @@
 ﻿using MarteliveryAPI.DTOs;
 using MarteliveryAPI.Entities;
-using MarteliveryAPI.Repositories.Interface;
+using MarteliveryAPI.Services.Interface;
+using MarteliveryAPI.Services.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static MarteliveryAPI.Services.ResponseService;
+using static MarteliveryAPI.Services.Options.UserResponseOption;
 
-namespace MarteliveryAPI.Repositories.Implementation
+namespace MarteliveryAPI.Services.Implementation
 {
-    public class UserRepository(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IUserRepository
+    public class UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IUserRepository
     {
         public async Task<GeneralResponse> CreateAccount(UserRegisterDTO userDTO)
         {
             if (userDTO is null)
                 return new GeneralResponse(false, "Model is empty");
-
-            //Check that the date of birth is not in the future and that the user is at least 18 years old
-            if (userDTO.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || userDTO.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
-                return new GeneralResponse(false, "Invalid date of birth, user must have at least 18 years old");
 
             var newUser = new User()
             {
@@ -28,8 +25,13 @@ namespace MarteliveryAPI.Repositories.Implementation
                 DateOfBirth = userDTO.DateOfBirth,
                 Email = userDTO.Email,
                 PasswordHash = userDTO.Password,
-                UserName = userDTO.Email
+                UserName = userDTO.Email,
+                IsCustomer = userDTO.IsCustomer
             };
+
+            //Check that the date of birth is not in the future and that the user is at least 18 years old
+            if (userDTO.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || userDTO.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
+                return new GeneralResponse(false, "Invalid date of birth, user must have at least 18 years old");
 
             //Check if user already exists
             var user = await userManager.FindByEmailAsync(newUser.Email);
@@ -41,8 +43,9 @@ namespace MarteliveryAPI.Repositories.Implementation
             if (!createUser.Succeeded)
                 return new GeneralResponse(false, "Invalid password.. Password must contain at least 1 uppercase, 1 lowercase, 1 digit, 1 non-alphanumeric, and at least 8 characters. Please try again");
 
-            //Assign Default Role : "Admin" to first registered user; rest are "User"
+            //Assign Default Role : "Admin" to first registered user; Assign "Customer" if IsCustomer is true, else assign "Carrier"
             var checkAdmin = await roleManager.FindByNameAsync("Admin");
+            var checkCustomer = await roleManager.FindByNameAsync("Customer");
             if (checkAdmin is null)
             {
                 await roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
@@ -50,13 +53,20 @@ namespace MarteliveryAPI.Repositories.Implementation
 
                 return new GeneralResponse(true, "Account Created");
             }
+            else if (checkCustomer is null && newUser.IsCustomer == true)
+            {
+                await roleManager.CreateAsync(new IdentityRole() { Name = "Customer" });
+                await userManager.AddToRoleAsync(newUser, "Customer");
+
+                return new GeneralResponse(true, "Account Created");
+            }
             else
             {
-                var checkUser = await roleManager.FindByNameAsync("User");
-                if (checkUser is null)
-                    await roleManager.CreateAsync(new IdentityRole() { Name = "User" });
+                var checkCarrier = await roleManager.FindByNameAsync("Carrier");
+                if (checkCarrier is null)
+                    await roleManager.CreateAsync(new IdentityRole() { Name = "Carrier" });
 
-                await userManager.AddToRoleAsync(newUser, "User");
+                await userManager.AddToRoleAsync(newUser, "Carrier");
 
                 return new GeneralResponse(true, "Account Created");
             }
@@ -68,12 +78,12 @@ namespace MarteliveryAPI.Repositories.Implementation
             if (loginDTO == null)
                 return new LoginResponse(false, null!, "Login container is empty");
 
-            //Check if email is valid
+            //Check if email match with user email in database
             var getUser = await userManager.FindByEmailAsync(loginDTO.Email);
             if (getUser is null)
                 return new LoginResponse(false, null!, "User not found");
 
-            //Check if password is valid
+            //Check if password match with user password hash in database
             bool checkUserPasswords = await userManager.CheckPasswordAsync(getUser, loginDTO.Password);
             if (!checkUserPasswords)
             {
@@ -94,7 +104,7 @@ namespace MarteliveryAPI.Repositories.Implementation
             var getUserRole = await userManager.GetRolesAsync(getUser);
 
             //Create user session
-            var userSession = new UserSessionRepository(getUser.Id, getUser.FirstName, getUser.LastName, getUser.Email, getUserRole.First());
+            var userSession = new UserSessionOption(getUser.Id, getUser.FirstName, getUser.LastName, getUser.Email, getUserRole.First());
 
             //Generate token
             string token = GenerateToken(userSession);
@@ -103,7 +113,7 @@ namespace MarteliveryAPI.Repositories.Implementation
             return new LoginResponse(true, token!, "Login completed");
         }
 
-        private string GenerateToken(UserSessionRepository user)
+        private string GenerateToken(UserSessionOption user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
 

@@ -12,8 +12,8 @@ using MarteliveryAPI.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using MarteliveryAPI.Repositories.Implementation;
-using MarteliveryAPI.Repositories.Interface;
+using MarteliveryAPI.Services.Implementation;
+using MarteliveryAPI.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,7 +92,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Dependency Injection
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserService>();
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();

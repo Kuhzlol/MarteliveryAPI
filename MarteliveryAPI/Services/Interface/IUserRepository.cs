@@ -1,7 +1,7 @@
 ﻿using MarteliveryAPI.DTOs;
-using static MarteliveryAPI.Services.ResponseService;
+using static MarteliveryAPI.Services.Options.UserResponseOption;
 
-namespace MarteliveryAPI.Repositories.Interface
+namespace MarteliveryAPI.Services.Interface
 {
     public interface IUserRepository
     {

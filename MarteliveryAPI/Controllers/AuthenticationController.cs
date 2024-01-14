@@ -1,5 +1,5 @@
 ﻿using MarteliveryAPI.DTOs;
-using MarteliveryAPI.Repositories.Interface;
+using MarteliveryAPI.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarteliveryAPI.Controllers

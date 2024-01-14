@@ -4,8 +4,6 @@ namespace MarteliveryAPI.DTOs
 {
     public class UserRegisterDTO
     {
-        //public string? Id { get; set; } = string.Empty;
-
         [Required]
         public string FirstName { get; set; } = string.Empty;
 
@@ -23,5 +21,8 @@ namespace MarteliveryAPI.DTOs
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
+
+        [Required]
+        public bool IsCustomer { get; set; }
     }
 }
