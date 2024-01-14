@@ -30,7 +30,7 @@ namespace MarteliveryAPI.Services.Implementation
             };
 
             //Check that the date of birth is not in the future and that the user is at least 18 years old
-            if (userDTO.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || userDTO.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
+            if (newUser.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || newUser.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
                 return new GeneralResponse(false, "Invalid date of birth, user must have at least 18 years old");
 
             //Check if user already exists
@@ -53,7 +53,7 @@ namespace MarteliveryAPI.Services.Implementation
 
                 return new GeneralResponse(true, "Account Created");
             }
-            else if (checkCustomer is null && newUser.IsCustomer == true)
+            else if (checkCustomer is null || newUser.IsCustomer == true)
             {
                 await roleManager.CreateAsync(new IdentityRole() { Name = "Customer" });
                 await userManager.AddToRoleAsync(newUser, "Customer");
