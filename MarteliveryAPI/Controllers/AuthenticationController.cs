@@ -12,7 +12,6 @@ namespace MarteliveryAPI.Controllers
     public class AuthenticationController(IUserRepository user) : ControllerBase
     {
         [HttpPost("Register")]
-        [AllowAnonymous]
         public async Task<IActionResult> Register(UserRegisterDTO userDTO)
         {
             var response = await user.CreateAccount(userDTO);

@@ -1,4 +1,5 @@
 ﻿using MarteliveryAPI.Data;
+using MarteliveryAPI.DTOs;
 using MarteliveryAPI.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -91,6 +92,21 @@ namespace MarteliveryAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("User deleted");
+        }
+
+        //Get method for user to get their own info from dto
+        [HttpGet("GetMyInfoDTO")]
+        [Authorize(Roles = "Admin, Customer, Carrier")]
+        public async Task<IActionResult> GetMyInfoDTO()
+        {
+            var user = await _context.Users.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (user == null)
+                return NotFound("User not found");
+
+            var userDTO = new UserInfoDTO();
+
+            return Ok(userDTO);
         }
 
     }

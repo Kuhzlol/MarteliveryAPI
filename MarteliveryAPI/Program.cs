@@ -23,10 +23,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
+//Add AutoMapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+//Add KeyVault
 var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
 var azureCredential = new DefaultAzureCredential();
 builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
 
+//Add DbContext
 var cs = builder.Configuration.GetSection("MarteliveryDbContext").Value;
 builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(cs));
 

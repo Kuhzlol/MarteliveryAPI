@@ -9,9 +9,7 @@ namespace MarteliveryAPI.Data
     //Update-Database
     public class DataContext(DbContextOptions options) : IdentityDbContext<User>(options)
     {
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<Parcel> Parcels { get; set; }
-        public DbSet<Carrier> Carriers { get; set; }
         public DbSet<Quote> Quotes { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
         public DbSet<Payment> Payments { get; set; }
@@ -22,9 +20,7 @@ namespace MarteliveryAPI.Data
         {
             base.OnModelCreating(modelBuilder);
             
-            modelBuilder.Entity<Customer>().ToTable("customers");
             modelBuilder.Entity<Parcel>().ToTable("parcels");
-            modelBuilder.Entity<Carrier>().ToTable("carriers");
             modelBuilder.Entity<Quote>().ToTable("quotes");
             modelBuilder.Entity<Delivery>().ToTable("deliveries");
             modelBuilder.Entity<Payment>().ToTable("payments");
