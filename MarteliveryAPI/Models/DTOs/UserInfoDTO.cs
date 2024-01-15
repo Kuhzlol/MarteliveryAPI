@@ -2,7 +2,7 @@
 
 namespace MarteliveryAPI.Models.DTOs
 {
-    public class UserMinimalInfoDTO
+    public class UserInfoDTO
     {
         [Required]
         public required string FirstName { get; set; }

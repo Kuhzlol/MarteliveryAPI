@@ -2,17 +2,31 @@
 using Microsoft.EntityFrameworkCore;
 using MarteliveryAPI.Data;
 using MarteliveryAPI.Models;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using MarteliveryAPI.Models.DTOs;
+using System.Security.Claims;
 
 namespace MarteliveryAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ParcelController(DataContext context) : ControllerBase
+    [Authorize]
+    public class ParcelController : ControllerBase
     {
-        private readonly DataContext _context = context;
+        private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        [HttpGet ("GetParcelsInfo")]
-        public async Task<ActionResult<List<Parcel>>> GetParcelsInfo()
+        public ParcelController(DataContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        //Get method for admin to get all parcels info
+        [HttpGet ("GetAllParcelsInfo")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllParcelsInfo()
         {
             var parcels = await _context.Parcels.ToListAsync();
 
@@ -22,7 +36,9 @@ namespace MarteliveryAPI.Controllers
             return Ok(parcels);
         }
 
+        //Get method for admin to get parcel info by id
         [HttpGet ("GetParcelInfo/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetParcelInfo(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
@@ -33,86 +49,50 @@ namespace MarteliveryAPI.Controllers
             return Ok(parcel);
         }
 
+        //Post method for user to create a parcel
         [HttpPost ("CreateParcel")]
-        public async Task<IActionResult> CreateParcel(Parcel parcel)
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CreateParcel(ParcelDTO parcelDTO)
         {
-            _context.Parcels.Add(new Parcel() 
-            {
-                PickupLocation = parcel.PickupLocation,
-                DeliveryLocation = parcel.DeliveryLocation,
-                TotalDistance = parcel.TotalDistance,
-                Length = parcel.Length,
-                Width = parcel.Width,
-                Height = parcel.Height,
-                Weight = parcel.Weight,
-                UserId = parcel.UserId
-            });
+            var parcel = _mapper.Map<Parcel>(parcelDTO);
+            parcel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            _context.Parcels.Add(parcel);
             await _context.SaveChangesAsync();
 
             return Ok("Parcel created");
         }
 
+        //Put method for user to update his parcel
         [HttpPut ("UpdateParcel/{id}")]
-        public async Task<IActionResult> UpdateParcel(string id, Parcel parcel)
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UpdateParcel(string id, ParcelDTO parcelDTO)
         {
-            var parcelToUpdate = await _context.Parcels.FindAsync(id);
+            var parcel = await _context.Parcels.FindAsync(id);
 
-            if (parcelToUpdate == null)
+            //Check if Customer is the owner of the parcel
+            if (parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return Unauthorized("You are not the owner of this parcel");
+
+            //Check if parcel exists
+            if (parcel == null)
                 return NotFound("Parcel not found");
 
-            bool isUpdated = false;
-            if (parcelToUpdate.PickupLocation != parcel.PickupLocation)
-            {
-                parcelToUpdate.PickupLocation = parcel.PickupLocation;
-                isUpdated = true;
-            }
-            if (parcelToUpdate.DeliveryLocation != parcel.DeliveryLocation)
-            {
-                parcelToUpdate.DeliveryLocation = parcel.DeliveryLocation;
-                isUpdated = true;
-            }
-            if (parcelToUpdate.TotalDistance != parcel.TotalDistance)
-            {
-                parcelToUpdate.TotalDistance = parcel.TotalDistance;
-                isUpdated = true;
-            }
-            if (parcelToUpdate.Length != parcel.Length)
-            {
-                parcelToUpdate.Length = parcel.Length;
-                isUpdated = true;
-            }
-            if (parcelToUpdate.Width != parcel.Width)
-            {
-                parcelToUpdate.Width = parcel.Width;
-                isUpdated = true;
-            }
-            if (parcelToUpdate.Height != parcel.Height)
-            {
-                parcelToUpdate.Height = parcel.Height;
-                isUpdated = true;
-            }
-            if (parcelToUpdate.Weight != parcel.Weight)
-            {
-                parcelToUpdate.Weight = parcel.Weight;
-                isUpdated = true;
-            }
+            parcel = _mapper.Map(parcelDTO, parcel);
 
-            if (isUpdated)
-            {
-                await _context.SaveChangesAsync();
-                return Ok("Parcel updated");
-            }
-            else 
-            {
-                return Ok("No changes were made to the parcel");
-            }
+            _context.Parcels.Update(parcel);
+            await _context.SaveChangesAsync();
+
+            return Ok("Parcel updated");
         }
 
+        //Delete method for admin to delete a parcel by id
         [HttpDelete ("DeleteParcel/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteParcel(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
-            
+
             if (parcel == null)
                 return NotFound("Parcel not found");
 

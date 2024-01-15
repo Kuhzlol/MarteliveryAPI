@@ -24,9 +24,10 @@ namespace MarteliveryAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllUserInfo")]
+        //Get method for admin to get all users info
+        [HttpGet("GetAllUsersInfo")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllUserInfo()
+        public async Task<IActionResult> GetAllUsersInfo()
         {
             var users = await _context.Users.ToListAsync();
 
@@ -59,7 +60,7 @@ namespace MarteliveryAPI.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            var userDTO = _mapper.Map<UserMinimalInfoDTO>(user);
+            var userDTO = _mapper.Map<UserInfoDTO>(user);
 
             return Ok(userDTO);
         }
@@ -67,7 +68,7 @@ namespace MarteliveryAPI.Controllers
         //Put method for user to update their own info
         [HttpPut("UpdateMyInfo")]
         [Authorize(Roles = "Admin, Customer, Carrier")]
-        public async Task<IActionResult> UpdateMyInfo(UserMinimalInfoDTO userDTO)
+        public async Task<IActionResult> UpdateMyInfo(UserInfoDTO userDTO)
         {
             if (userDTO == null)
                 return BadRequest("Model is empty");

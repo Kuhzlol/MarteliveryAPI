@@ -9,9 +9,9 @@ namespace MarteliveryAPI.Services.Profiles
         public UserProfile()
         {
             //Used for getting mnimal user info
-            CreateMap<User, UserMinimalInfoDTO>();
+            CreateMap<User, UserInfoDTO>();
             //Used for updating minimal user info
-            CreateMap<UserMinimalInfoDTO, User>();
+            CreateMap<UserInfoDTO, User>();
         }
     }
 }
