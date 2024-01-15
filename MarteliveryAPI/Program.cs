@@ -12,8 +12,8 @@ using MarteliveryAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using MarteliveryAPI.Services.Implementation;
 using MarteliveryAPI.Services.Interfaces;
+using MarteliveryAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

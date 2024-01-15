@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using static MarteliveryAPI.Services.Options.UserResponseOption;
 
-namespace MarteliveryAPI.Services.Implementation
+namespace MarteliveryAPI.Services
 {
     public class UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IUser
     {
@@ -91,7 +91,7 @@ namespace MarteliveryAPI.Services.Implementation
                 await userManager.AccessFailedAsync(getUser);
                 return new LoginResponse(false, null!, "Invalid email/password");
             }
-            
+
             //Check if user is locked out
             var checkUserLockout = await userManager.IsLockedOutAsync(getUser);
             if (checkUserLockout)

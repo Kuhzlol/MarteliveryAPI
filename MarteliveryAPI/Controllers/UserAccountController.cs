@@ -65,19 +65,28 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Put method for user to update their own info
-        [HttpPut("UpdateMyIn")]
+        [HttpPut("UpdateMyInfo")]
         [Authorize(Roles = "Admin, Customer, Carrier")]
         public async Task<IActionResult> UpdateMyInfo(UserMinimalInfoDTO userDTO)
         {
             if (userDTO == null)
                 return BadRequest("Model is empty");
 
-            var userToUpdate = await _context.Users.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (userToUpdate == null)
+            if (user == null)
                 return NotFound("User not found");
 
-            userToUpdate = _mapper.Map(userDTO, userToUpdate);
+            //Check that the new date of birth is not in the future and that the user is at least 18 years old
+            if (userDTO.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || userDTO.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
+                return BadRequest("Invalid date of birth, user must have at least 18 years old");
+
+            _mapper.Map(userDTO, user);
+
+            //Username == email; Normalize username and email == email.ToUpper()
+            user.UserName = userDTO.Email;
+            user.NormalizedUserName = userDTO.Email.ToUpper();
+            user.NormalizedEmail = userDTO.Email.ToUpper();
 
             await _context.SaveChangesAsync();
 

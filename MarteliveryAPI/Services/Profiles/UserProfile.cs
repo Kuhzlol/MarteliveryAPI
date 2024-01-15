@@ -4,12 +4,13 @@ using MarteliveryAPI.Models.DTOs;
 
 namespace MarteliveryAPI.Services.Profiles
 {
-    public class AutoMapperProfile : Profile
+    public class UserProfile : Profile
     {
-        public AutoMapperProfile()
+        public UserProfile()
         {
-            CreateMap<User, UserAllInfoDTO>();
+            //Used for getting mnimal user info
             CreateMap<User, UserMinimalInfoDTO>();
+            //Used for updating minimal user info
             CreateMap<UserMinimalInfoDTO, User>();
         }
     }
