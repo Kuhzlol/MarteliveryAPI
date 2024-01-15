@@ -8,12 +8,12 @@ using System.Security.Claims;
 using MarteliveryAPI.Controllers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using MarteliveryAPI.Entities;
+using MarteliveryAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using MarteliveryAPI.Services.Implementation;
-using MarteliveryAPI.Services.Interface;
+using MarteliveryAPI.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -97,7 +97,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Dependency Injection
-builder.Services.AddScoped<IUserRepository, UserService>();
+builder.Services.AddScoped<IUser, UserService>();
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();

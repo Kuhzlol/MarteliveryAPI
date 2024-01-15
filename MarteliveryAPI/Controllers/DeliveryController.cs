@@ -1,5 +1,5 @@
 ﻿using MarteliveryAPI.Data;
-using MarteliveryAPI.Entities;
+using MarteliveryAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

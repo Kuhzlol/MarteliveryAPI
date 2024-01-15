@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MarteliveryAPI.DTOs
+namespace MarteliveryAPI.Models.DTOs
 {
-    public class UserInfoDTO
+    public class UserMinimalInfoDTO
     {
         [Required]
         public required string FirstName { get; set; }

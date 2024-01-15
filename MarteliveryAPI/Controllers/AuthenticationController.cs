@@ -1,5 +1,5 @@
-﻿using MarteliveryAPI.DTOs;
-using MarteliveryAPI.Services.Interface;
+﻿using MarteliveryAPI.Models.DTOs;
+using MarteliveryAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ namespace MarteliveryAPI.Controllers
     [Route("[controller]")]
     [ApiController]
     [AllowAnonymous]
-    public class AuthenticationController(IUserRepository user) : ControllerBase
+    public class AuthenticationController(IUser user) : ControllerBase
     {
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterDTO userDTO)

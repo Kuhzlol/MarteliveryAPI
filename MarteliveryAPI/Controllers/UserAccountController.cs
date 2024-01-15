@@ -1,6 +1,7 @@
-﻿using MarteliveryAPI.Data;
-using MarteliveryAPI.DTOs;
-using MarteliveryAPI.Entities;
+﻿using AutoMapper;
+using MarteliveryAPI.Data;
+using MarteliveryAPI.Models;
+using MarteliveryAPI.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,18 @@ namespace MarteliveryAPI.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class UserAccountController(DataContext context) : ControllerBase
+    public class UserAccountController : ControllerBase
     {
-        private readonly DataContext _context = context;
+        private readonly DataContext _context;
 
-        //Get method for admin to get all users info
+        private readonly IMapper _mapper;
+
+        public UserAccountController(DataContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
         [HttpGet("GetAllUserInfo")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUserInfo()
@@ -41,7 +49,7 @@ namespace MarteliveryAPI.Controllers
             return Ok(user);
         }
 
-        //Get method for any kind of user to get their own info
+        //Get method for user to get their own info
         [HttpGet("GetMyInfo")]
         [Authorize(Roles = "Admin, Customer, Carrier")]
         public async Task<IActionResult> GetMyInfo()
@@ -51,15 +59,17 @@ namespace MarteliveryAPI.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            return Ok(user);
+            var userDTO = _mapper.Map<UserMinimalInfoDTO>(user);
+
+            return Ok(userDTO);
         }
 
-        //Put method for any kind of user to update their own info
-        [HttpPut("UpdateMyInfo")]
+        //Put method for user to update their own info
+        [HttpPut("UpdateMyIn")]
         [Authorize(Roles = "Admin, Customer, Carrier")]
-        public async Task<IActionResult> UpdateMyInfo(User user)
+        public async Task<IActionResult> UpdateMyInfo(UserMinimalInfoDTO userDTO)
         {
-            if (user == null)
+            if (userDTO == null)
                 return BadRequest("Model is empty");
 
             var userToUpdate = await _context.Users.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -67,11 +77,7 @@ namespace MarteliveryAPI.Controllers
             if (userToUpdate == null)
                 return NotFound("User not found");
 
-            userToUpdate.FirstName = user.FirstName;
-            userToUpdate.LastName = user.LastName;
-            userToUpdate.DateOfBirth = user.DateOfBirth;
-            userToUpdate.Email = user.Email;
-            userToUpdate.PhoneNumber = user.PhoneNumber;
+            userToUpdate = _mapper.Map(userDTO, userToUpdate);
 
             await _context.SaveChangesAsync();
 
@@ -93,21 +99,5 @@ namespace MarteliveryAPI.Controllers
 
             return Ok("User deleted");
         }
-
-        //Get method for user to get their own info from dto
-        [HttpGet("GetMyInfoDTO")]
-        [Authorize(Roles = "Admin, Customer, Carrier")]
-        public async Task<IActionResult> GetMyInfoDTO()
-        {
-            var user = await _context.Users.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            if (user == null)
-                return NotFound("User not found");
-
-            var userDTO = new UserInfoDTO();
-
-            return Ok(userDTO);
-        }
-
     }
 }

@@ -1,6 +1,6 @@
-﻿using MarteliveryAPI.DTOs;
-using MarteliveryAPI.Entities;
-using MarteliveryAPI.Services.Interface;
+﻿using MarteliveryAPI.Models;
+using MarteliveryAPI.Models.DTOs;
+using MarteliveryAPI.Services.Interfaces;
 using MarteliveryAPI.Services.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +11,7 @@ using static MarteliveryAPI.Services.Options.UserResponseOption;
 
 namespace MarteliveryAPI.Services.Implementation
 {
-    public class UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IUserRepository
+    public class UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IUser
     {
         public async Task<GeneralResponse> CreateAccount(UserRegisterDTO userDTO)
         {

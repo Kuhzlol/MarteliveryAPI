@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MarteliveryAPI.Entities
+namespace MarteliveryAPI.Models
 {
     [Table("users")]
     public class User : IdentityUser
