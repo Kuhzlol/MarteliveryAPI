@@ -61,7 +61,7 @@ namespace MarteliveryAPI.Controllers
         //Post method for admin to create a parcel with Mapped DTO
         [HttpPost("AdminCreateParcel")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminCreateParcel(AdminCreateParcelDTO parcelDTO)
+        public async Task<IActionResult> AdminCreateParcel(AdminParcelCreateDTO parcelDTO)
         {
             var parcel = _mapper.Map<Parcel>(parcelDTO);
 
@@ -74,7 +74,7 @@ namespace MarteliveryAPI.Controllers
         //Put method for admin to update a parcel by id with Mapped DTO
         [HttpPut("AdminUpdateParcel/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminUpdateParcel(string id, AdminUpdateParcelDTO parcelDTO)
+        public async Task<IActionResult> AdminUpdateParcel(string id, AdminParcelUpdateDTO parcelDTO)
         {
             var parcel = await _context.Parcels.FindAsync(id);
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MarteliveryAPI.Data;
 using MarteliveryAPI.Models;
+using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,42 +13,50 @@ namespace MarteliveryAPI.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class UserAccountController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly DataContext _context;
 
         private readonly IMapper _mapper;
 
-        public UserAccountController(DataContext context, IMapper mapper)
+        public UserController(DataContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        //Get method for admin to get all users info
-        [HttpGet("GetAllUsersInfo")]
+        /*---------*/
+        /*  ADMIN  */
+        /*---------*/
+
+        //Get method for admin to get all users info with Mapped DTO
+        [HttpGet("AdminGetAllUsersInfo")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllUsersInfo()
+        public async Task<IActionResult> AdminGetAllUsersInfo()
         {
             var users = await _context.Users.ToListAsync();
 
             if (users.Count == 0)
                 return NotFound("Users not found");
 
-            return Ok(users);
+            var usersDTO = _mapper.Map<List<AdminUserDTO>>(users);
+
+            return Ok(usersDTO);
         }
 
-        //Get method for admin to get user info by id
-        [HttpGet("GetUserInfo/{id}")]
+        //Get method for admin to get user info by id with Mapped DTO
+        [HttpGet("AdminGetUserInfo/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetUserInfo(string id)
+        public async Task<IActionResult> AdminGetUserInfo(string id)
         {
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
                 return NotFound("User not found");
 
-            return Ok(user);
+            var userDTO = _mapper.Map<AdminUserDTO>(user);
+
+            return Ok(userDTO);
         }
 
         //Get method for user to get their own info

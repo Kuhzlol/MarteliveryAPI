@@ -1,6 +1,6 @@
 ﻿namespace MarteliveryAPI.Models.DTOs.Admin
 {
-    public class AdminCreateParcelDTO
+    public class AdminParcelUpdateDTO
     {
         public required string PickupLocation { get; set; }
         public required string DeliveryLocation { get; set; }

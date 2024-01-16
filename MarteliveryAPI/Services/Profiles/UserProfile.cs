@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarteliveryAPI.Models.Domain;
+using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.User;
 
 namespace MarteliveryAPI.Services.Profiles
@@ -8,9 +9,10 @@ namespace MarteliveryAPI.Services.Profiles
     {
         public UserProfile()
         {
-            //Used for getting minimal user info
+            CreateMap<User, AdminUserDTO>().ReverseMap();
+            CreateMap<AdminUserDTO, User>().ReverseMap();
+            
             CreateMap<User, UserInfoDTO>().ReverseMap();
-            //Used for updating minimal user info
             CreateMap<UserInfoDTO, User>().ReverseMap();
         }
     }
