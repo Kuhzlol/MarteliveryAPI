@@ -110,7 +110,7 @@ namespace MarteliveryAPI.Controllers
         /*  USERS  */
         /*---------*/
 
-        //Get method for user to get all of their own parcels info
+        //Get method for user to get all of their own parcels info with Mapped DTO
         [HttpGet ("GetMyParcelsInfo")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetMyParcelsInfo()
@@ -120,24 +120,27 @@ namespace MarteliveryAPI.Controllers
             if (parcels.Count == 0)
                 return NotFound("Parcels not found");
 
-            return Ok(parcels);
+            var parcelsDTO = _mapper.Map<List<CustomerParcelDTO>>(parcels);
+
+            return Ok(parcelsDTO);
         }
 
-        //Post method for user to create a parcel
+        //Post method for user to create a parcel with Mapped DTO
         [HttpPost ("UserCreateParcel")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserCreateParcel(CustomerParcelDTO parcelDTO)
         {
             var parcel = _mapper.Map<Parcel>(parcelDTO);
+
             parcel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             _context.Parcels.Add(parcel);
             await _context.SaveChangesAsync();
 
             return Ok("Parcel created");
-        }        
+        }
 
-        //Put method for user to update his parcel
+        //Put method for user to update his parcel by id with Mapped DTO
         [HttpPut ("UserUpdateParcel/{id}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserUpdateParcel(string id, CustomerParcelDTO parcelDTO)
@@ -158,6 +161,26 @@ namespace MarteliveryAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Parcel updated");
+        }
+
+        //Delete method for user to delete his parcel by id
+        [HttpDelete ("UserDeleteParcel/{id}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UserDeleteParcel(string id)
+        {
+            var parcel = await _context.Parcels.FindAsync(id);
+
+            //Check if Customer is the owner of the parcel
+            if (parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return Unauthorized("You are not the owner of this parcel");
+
+            if (parcel == null)
+                return NotFound("Parcel not found");
+
+            _context.Parcels.Remove(parcel);
+            await _context.SaveChangesAsync();
+
+            return Ok("Parcel deleted");
         }
     }
 }
