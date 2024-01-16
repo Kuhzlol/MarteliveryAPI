@@ -1,4 +1,4 @@
-﻿using MarteliveryAPI.Models.DTOs;
+﻿using MarteliveryAPI.Models.DTOs.User;
 using static MarteliveryAPI.Services.Options.UserResponseOption;
 
 namespace MarteliveryAPI.Services.Interfaces

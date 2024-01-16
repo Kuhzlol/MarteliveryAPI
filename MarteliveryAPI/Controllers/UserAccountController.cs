@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MarteliveryAPI.Data;
 using MarteliveryAPI.Models;
-using MarteliveryAPI.Models.DTOs;
+using MarteliveryAPI.Models.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

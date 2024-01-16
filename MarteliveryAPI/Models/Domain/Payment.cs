@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MarteliveryAPI.Models
+namespace MarteliveryAPI.Models.Domain
 {
     [Table("payments")]
     public class Payment

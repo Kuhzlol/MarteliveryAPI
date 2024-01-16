@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MarteliveryAPI.Models.DTOs
+namespace MarteliveryAPI.Models.DTOs.User
 {
     public class UserRegisterDTO
     {

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarteliveryAPI.Data;
-using MarteliveryAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using MarteliveryAPI.Models.DTOs;
 using System.Security.Claims;
+using MarteliveryAPI.Models.DTOs.Admin;
+using MarteliveryAPI.Models.Domain;
+using MarteliveryAPI.Models.DTOs.Customer;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -23,49 +24,44 @@ namespace MarteliveryAPI.Controllers
             _mapper = mapper;
         }
 
-        //Get method for admin to get all parcels info
+        /*---------*/
+        /*  ADMIN  */
+        /*---------*/
+
+        //Get method for admin to get all parcels info with Mapped DTO
         [HttpGet ("AdminGetAllParcelsInfo")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllParcelsInfo()
+        public async Task<IActionResult> AdminGetAllParcelsInfo()
         {
             var parcels = await _context.Parcels.ToListAsync();
 
             if (parcels.Count == 0)
                 return NotFound("Parcels not found");
 
-            return Ok(parcels);
+            var parcelsDTO = _mapper.Map<List<AdminParcelDTO>>(parcels);
+
+            return Ok(parcelsDTO);
         }
 
-        //Get method for admin to get parcel info by id
+        //Get method for admin to get parcel info by id with Mapped DTO
         [HttpGet ("AdminGetParcelInfo/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetParcelInfo(string id)
+        public async Task<IActionResult> AdminGetParcelInfo(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
 
             if (parcel == null)
                 return NotFound("Parcel not found");
 
-            return Ok(parcel);
+            var parcelDTO = _mapper.Map<AdminParcelDTO>(parcel);
+
+            return Ok(parcelDTO);
         }
 
-        //Get method for user to get their own parcels info
-        [HttpGet ("GetMyParcelsInfo")]
-        [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> GetMyParcelsInfo()
-        {
-            var parcels = await _context.Parcels.Where(p => p.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
-
-            if (parcels.Count == 0)
-                return NotFound("Parcels not found");
-
-            return Ok(parcels);
-        }
-
-        //Post method for admin to create a parcel
-        [HttpPost ("AdminCreateParcel")]
+        //Post method for admin to create a parcel with Mapped DTO
+        [HttpPost("AdminCreateParcel")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminCreateParcel(ParcelDTO parcelDTO)
+        public async Task<IActionResult> AdminCreateParcel(AdminCreateParcelDTO parcelDTO)
         {
             var parcel = _mapper.Map<Parcel>(parcelDTO);
 
@@ -75,24 +71,10 @@ namespace MarteliveryAPI.Controllers
             return Ok("Parcel created");
         }
 
-        //Post method for user to create a parcel
-        [HttpPost ("UserCreateParcel")]
-        [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> UserCreateParcel(ParcelDTO parcelDTO)
-        {
-            var parcel = _mapper.Map<Parcel>(parcelDTO);
-            parcel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            _context.Parcels.Add(parcel);
-            await _context.SaveChangesAsync();
-
-            return Ok("Parcel created");
-        }
-
-        //Put method for admin to update a parcel by id
-        [HttpPut ("AdminUpdateParcel/{id}")]
+        //Put method for admin to update a parcel by id with Mapped DTO
+        [HttpPut("AdminUpdateParcel/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminUpdateParcel(string id, ParcelDTO parcelDTO)
+        public async Task<IActionResult> AdminUpdateParcel(string id, AdminUpdateParcelDTO parcelDTO)
         {
             var parcel = await _context.Parcels.FindAsync(id);
 
@@ -108,10 +90,57 @@ namespace MarteliveryAPI.Controllers
             return Ok("Parcel updated");
         }
 
+        //Delete method for admin to delete a parcel by id
+        [HttpDelete("AdminDeleteParcel/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminDeleteParcel(string id)
+        {
+            var parcel = await _context.Parcels.FindAsync(id);
+
+            if (parcel == null)
+                return NotFound("Parcel not found");
+
+            _context.Parcels.Remove(parcel);
+            await _context.SaveChangesAsync();
+
+            return Ok("Parcel deleted");
+        }
+
+        /*---------*/
+        /*  USERS  */
+        /*---------*/
+
+        //Get method for user to get all of their own parcels info
+        [HttpGet ("GetMyParcelsInfo")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetMyParcelsInfo()
+        {
+            var parcels = await _context.Parcels.Where(p => p.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
+
+            if (parcels.Count == 0)
+                return NotFound("Parcels not found");
+
+            return Ok(parcels);
+        }
+
+        //Post method for user to create a parcel
+        [HttpPost ("UserCreateParcel")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> UserCreateParcel(CustomerParcelDTO parcelDTO)
+        {
+            var parcel = _mapper.Map<Parcel>(parcelDTO);
+            parcel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            _context.Parcels.Add(parcel);
+            await _context.SaveChangesAsync();
+
+            return Ok("Parcel created");
+        }        
+
         //Put method for user to update his parcel
         [HttpPut ("UserUpdateParcel/{id}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> UserUpdateParcel(string id, ParcelDTO parcelDTO)
+        public async Task<IActionResult> UserUpdateParcel(string id, CustomerParcelDTO parcelDTO)
         {
             var parcel = await _context.Parcels.FindAsync(id);
 
@@ -129,22 +158,6 @@ namespace MarteliveryAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Parcel updated");
-        }
-
-        //Delete method for admin to delete a parcel by id
-        [HttpDelete ("AdminDeleteParcel/{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminDeleteParcel(string id)
-        {
-            var parcel = await _context.Parcels.FindAsync(id);
-
-            if (parcel == null)
-                return NotFound("Parcel not found");
-
-            _context.Parcels.Remove(parcel);
-            await _context.SaveChangesAsync();
-
-            return Ok("Parcel deleted");
         }
     }
 }

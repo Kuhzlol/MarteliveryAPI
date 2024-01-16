@@ -1,5 +1,5 @@
-﻿using MarteliveryAPI.Models;
-using MarteliveryAPI.Models.DTOs;
+﻿using MarteliveryAPI.Models.Domain;
+using MarteliveryAPI.Models.DTOs.User;
 using MarteliveryAPI.Services.Interfaces;
 using MarteliveryAPI.Services.Options;
 using Microsoft.AspNetCore.Identity;

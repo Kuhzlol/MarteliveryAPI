@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using MarteliveryAPI.Models;
-using MarteliveryAPI.Models.DTOs;
+using MarteliveryAPI.Models.Domain;
+using MarteliveryAPI.Models.DTOs.Admin;
+using MarteliveryAPI.Models.DTOs.Customer;
 
 namespace MarteliveryAPI.Services.Profiles
 {
@@ -8,8 +9,12 @@ namespace MarteliveryAPI.Services.Profiles
     {
         public ParcelProfile()
         {
-            CreateMap<Parcel, ParcelDTO>();
-            CreateMap<ParcelDTO, Parcel>();
+            CreateMap<Parcel, AdminParcelDTO>().ReverseMap();
+            CreateMap<AdminCreateParcelDTO, Parcel>().ReverseMap();
+            CreateMap<AdminUpdateParcelDTO, Parcel>().ReverseMap();
+
+            CreateMap<Parcel, CustomerParcelDTO>().ReverseMap();
+            CreateMap<CustomerParcelDTO, Parcel>().ReverseMap();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace MarteliveryAPI.Models
+namespace MarteliveryAPI.Models.Domain
 {
     [Table("quotes")]
     public class Quote

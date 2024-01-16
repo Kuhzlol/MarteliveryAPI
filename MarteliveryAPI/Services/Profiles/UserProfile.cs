@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MarteliveryAPI.Models;
-using MarteliveryAPI.Models.DTOs;
+using MarteliveryAPI.Models.Domain;
+using MarteliveryAPI.Models.DTOs.User;
 
 namespace MarteliveryAPI.Services.Profiles
 {
@@ -8,7 +8,7 @@ namespace MarteliveryAPI.Services.Profiles
     {
         public UserProfile()
         {
-            //Used for getting mnimal user info
+            //Used for getting minimal user info
             CreateMap<User, UserInfoDTO>();
             //Used for updating minimal user info
             CreateMap<UserInfoDTO, User>();

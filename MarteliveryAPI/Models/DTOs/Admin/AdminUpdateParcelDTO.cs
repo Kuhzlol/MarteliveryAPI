@@ -1,22 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MarteliveryAPI.Models.DTOs
+﻿namespace MarteliveryAPI.Models.DTOs.Admin
 {
-    public class ParcelDTO
+    public class AdminUpdateParcelDTO
     {
-        [Required]
         public required string PickupLocation { get; set; }
-        [Required]
         public required string DeliveryLocation { get; set; }
-        [Required]
         public required float TotalDistance { get; set; }
-        [Required]
         public required float Length { get; set; }
-        [Required]
         public required float Width { get; set; }
-        [Required]
         public required float Height { get; set; }
-        [Required]
         public required float Weight { get; set; }
+        public required string UserId { get; set; }
     }
 }

@@ -8,12 +8,12 @@ using System.Security.Claims;
 using MarteliveryAPI.Controllers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using MarteliveryAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using MarteliveryAPI.Services.Interfaces;
 using MarteliveryAPI.Services;
+using MarteliveryAPI.Models.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MarteliveryAPI.Models
+namespace MarteliveryAPI.Models.Domain
 {
     [Table("parcels")]
     public class Parcel
@@ -16,7 +16,7 @@ namespace MarteliveryAPI.Models
         [Column("delivery_location", TypeName = "varchar(250)")]
         public required string DeliveryLocation { get; set; }
 
-        [Column ("total_distance", TypeName = "float")]
+        [Column("total_distance", TypeName = "float")]
         public required float TotalDistance { get; set; }
 
         [Column("length")]
