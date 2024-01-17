@@ -9,11 +9,13 @@ namespace MarteliveryAPI.Services.Profiles
     {
         public UserProfile()
         {
-            CreateMap<User, AdminUserDTO>().ReverseMap();
-            CreateMap<AdminUserDTO, User>().ReverseMap();
-            
+            CreateMap<User, AdminUserInfoDTO>().ReverseMap();
+            CreateMap<AdminUserInfoDTO, User>().ReverseMap();
+            CreateMap<AdminUserUpdateDTO, User>().ReverseMap();
+
             CreateMap<User, UserInfoDTO>().ReverseMap();
-            CreateMap<UserInfoDTO, User>().ReverseMap();
+            CreateMap<UserInfoUpdateDTO, User>().ReverseMap();
+            CreateMap<UserPasswordUpdateDTO, User>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password)).ReverseMap();
         }
     }
 }

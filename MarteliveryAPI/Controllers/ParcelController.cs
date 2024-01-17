@@ -63,6 +63,9 @@ namespace MarteliveryAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminCreateParcel(AdminParcelCreateDTO parcelDTO)
         {
+            if (parcelDTO == null)
+                return BadRequest("Model is empty");
+            
             var parcel = _mapper.Map<Parcel>(parcelDTO);
 
             _context.Parcels.Add(parcel);
@@ -76,6 +79,9 @@ namespace MarteliveryAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminUpdateParcel(string id, AdminParcelUpdateDTO parcelDTO)
         {
+            if (parcelDTO == null)
+                return BadRequest("Model is empty");
+            
             var parcel = await _context.Parcels.FindAsync(id);
 
             //Check if parcel exists
@@ -145,6 +151,9 @@ namespace MarteliveryAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserUpdateParcel(string id, CustomerParcelDTO parcelDTO)
         {
+            if (parcelDTO == null)
+                return BadRequest("Model is empty");
+            
             var parcel = await _context.Parcels.FindAsync(id);
 
             //Check if Customer is the owner of the parcel
