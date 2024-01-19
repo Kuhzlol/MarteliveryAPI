@@ -27,9 +27,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 //Add KeyVault
-var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
+/*var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
 var azureCredential = new DefaultAzureCredential();
-builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
+builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);*/
+
+var keyVaultUrl = builder.Configuration.GetSection("KeyVault:KeyVaultURL");
+var keyVaultClientId = builder.Configuration.GetSection("KeyVault:ClientId");
+var keyVaultClientSecret = builder.Configuration.GetSection("KeyVault:ClientSecret");
+var keyVaultDirectoryId = builder.Configuration.GetSection("KeyVault:DirectoryID");
 
 //Add DbContext
 var cs = builder.Configuration.GetSection("MarteliveryDbContext").Value;

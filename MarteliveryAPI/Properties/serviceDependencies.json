@@ -7,6 +7,9 @@
     "secrets2": {
       "type": "secrets",
       "dynamicId": null
+    },
+    "apis1": {
+      "type": "apis"
     }
   }
 }
