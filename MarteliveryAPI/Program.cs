@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MarteliveryAPI.Services.Interfaces;
 using MarteliveryAPI.Services;
 using MarteliveryAPI.Models.Domain;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,24 +22,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen();
 
 //Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 //Add KeyVault
-/*var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
-var azureCredential = new DefaultAzureCredential();
-builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);*/
+var keyVaultURL = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
+var credential = new DefaultAzureCredential();
 
-var keyVaultUrl = builder.Configuration.GetSection("KeyVault:KeyVaultURL");
-var keyVaultClientId = builder.Configuration.GetSection("KeyVault:ClientId");
-var keyVaultClientSecret = builder.Configuration.GetSection("KeyVault:ClientSecret");
-var keyVaultDirectoryId = builder.Configuration.GetSection("KeyVault:DirectoryID");
+builder.Configuration.AddAzureKeyVault(keyVaultURL, credential);
+
+var client = new SecretClient(keyVaultURL, credential);
 
 //Add DbContext
-var cs = builder.Configuration.GetSection("MarteliveryDbContext").Value;
-builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(cs));
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseNpgsql(client.GetSecret("MarteliveryDbContext").Value.Value.ToString());
+});
 
 //Add cors to allow any origin, any method and any header
 builder.Services.AddCors();
@@ -53,7 +54,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
 
     //Lockout Settings
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);

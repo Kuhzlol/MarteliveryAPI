@@ -75,6 +75,11 @@ namespace MarteliveryAPI.Controllers
             if (user == null)
                 return NotFound("User not found");
 
+            //Check if email is already taken
+            var checkEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == userDTO.Email);
+            if (checkEmail != null && checkEmail.Id != user.Id)
+                return BadRequest("Email already taken");
+
             user = _mapper.Map(userDTO, user);
 
             //Username == email; Normalize username and email == email.ToUpper()
@@ -139,6 +144,11 @@ namespace MarteliveryAPI.Controllers
             //Check that the date of birth is not in the future and that the user is at least 18 years old
             if (userDTO.DateOfBirth > DateOnly.FromDateTime(DateTime.Now) || userDTO.DateOfBirth.AddYears(18) > DateOnly.FromDateTime(DateTime.Now))
                 return BadRequest("Invalid date of birth, user must have at least 18 years old");
+
+            //Check if email is already taken
+            var checkEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == userDTO.Email);
+            if (checkEmail != null && checkEmail.Id != user.Id)
+                return BadRequest("Email already taken");
 
             user = _mapper.Map(userDTO, user);
 
