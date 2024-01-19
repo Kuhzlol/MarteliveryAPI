@@ -1,4 +1,6 @@
-﻿using MarteliveryAPI.Models.Domain;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.User;
 using MarteliveryAPI.Services.Interfaces;
 using MarteliveryAPI.Services.Options;
@@ -115,9 +117,13 @@ namespace MarteliveryAPI.Services
 
         private string GenerateToken(UserSessionOption user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
+            var keyVaultURL = new Uri(config.GetSection("KeyVaultURL").Value!);
+            var credential = new DefaultAzureCredential();
+            var client = new SecretClient(keyVaultURL, credential);
+            
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(client.GetSecret("JWTKey").Value.Value.ToString()));
 
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha384);
 
             var userClaims = new[]
             {
