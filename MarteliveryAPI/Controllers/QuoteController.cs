@@ -3,11 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using MarteliveryAPI.Data;
 using MarteliveryAPI.Models.Domain;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using MarteliveryAPI.Models.DTOs.Admin;
 
 namespace MarteliveryAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class QuoteController(DataContext context, IMapper mapper) : ControllerBase
     {
         private readonly DataContext _context = context;
@@ -18,84 +21,102 @@ namespace MarteliveryAPI.Controllers
         /*---------*/
 
         //Get method for admin to get all quotes info with Mapped DTO
-
-        [HttpGet ("GetQuotesInfo")]
-        public async Task<ActionResult<List<Quote>>> GetQuotesInfo()
+        [HttpGet ("AdminGetAllQuotesInfo")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminGetAllQuotesInfo()
         {
             var quotes = await _context.Quotes.ToListAsync();
 
             if (quotes.Count == 0)
                 return NotFound("Quotes not found");
-            
-            return Ok(quotes);
+
+            var quotesDTO = _mapper.Map<List<AdminQuoteInfoDTO>>(quotes);
+
+            return Ok(quotesDTO);
         }
 
-        [HttpGet("GetQuote/{id}")]
-        public async Task<ActionResult<Quote>> GetQuoteInfo(string id)
+        //Get method for admin to get quote info by id with Mapped DTO
+        [HttpGet ("AdminGetQuoteInfo/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminGetQuoteInfo(string id)
         {
             var quote = await _context.Quotes.FindAsync(id);
 
             if (quote == null)
                 return NotFound("Quote not found");
 
-            return Ok(quote);
+            var quoteDTO = _mapper.Map<AdminQuoteInfoDTO>(quote);
+
+            return Ok(quoteDTO);
         }
 
-        [HttpPost ("CreateQuote")]
-        public async Task<ActionResult<Quote>> CreateQuote(Quote quote)
-        {            
-            _context.Quotes.Add(new Quote()
-            {
-                PricePerKm = quote.PricePerKm,
-                TotalPrice = quote.TotalPrice,
-                UserId = quote.UserId,
-                ParcelId = quote.ParcelId
-            });
+        //Post method for admin to create a quote with Mapped DTO
+        [HttpPost("AdminCreateQuote")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminCreateQuote(AdminQuoteCreateDTO quoteDTO)
+        {
+            if (quoteDTO == null)
+                return BadRequest("Quote data is empty");
+
+            //Check if quote status is valid
+            if (quoteDTO.Status != "Pending" || quoteDTO.Status != "Accepted" || quoteDTO.Status != "Rejected")
+                return BadRequest("Quote status is invalid");
+
+            //Calculate total price based on price per km and total distance from the parcel
+            var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
+            if (parcel == null)
+                return NotFound("Parcel not found");
+
+            quoteDTO.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
+
+            var quote = _mapper.Map<Quote>(quoteDTO);
+
+            _context.Quotes.Add(quote);
             await _context.SaveChangesAsync();
 
             return Ok("Quote created");
         }
 
-        [HttpPut("UpdateQuote/{id}")]
-        public async Task<ActionResult> UpdateQuote(string id, Quote quote)
+        //Put method for admin to update a quote by id with Mapped DTO
+        [HttpPut("AdminUpdateQuote/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminUpdateQuote(string id, AdminQuoteUpdateDTO quoteDTO)
         {
-            var quoteToUpdate = await _context.Quotes.FindAsync(id);
+            if (quoteDTO == null)
+                return BadRequest("Quote data is empty");
 
-            if (quoteToUpdate == null)
+            var quote = await _context.Quotes.FindAsync(id);
+
+            //Check if quote exists
+            if (quote == null)
                 return NotFound("Quote not found");
 
-            bool isUpdated = false;
-            if (quoteToUpdate.PricePerKm != quote.PricePerKm)
-            {
-                quoteToUpdate.PricePerKm = quote.PricePerKm;
-                isUpdated = true;
-            }
-            if (quoteToUpdate.TotalPrice != quote.TotalPrice)
-            {
-                quoteToUpdate.TotalPrice = quote.TotalPrice;
-                isUpdated = true;
-            }
-            if (quoteToUpdate.Status != quote.Status)
-            {
-                quoteToUpdate.Status = quote.Status;
-                isUpdated = true;
-            }
+            //Check if quote status is valid
+            if (quoteDTO.Status != "Pending" || quoteDTO.Status != "Accepted" || quoteDTO.Status != "Rejected")
+                return BadRequest("Quote status is invalid");            
 
-            if (isUpdated)
-            {
-                await _context.SaveChangesAsync();
-                return Ok("Quote updated");
-            }
-            else
-            {
-                return Ok("No changes were made to the quote");
-            }
+            //Calculate total price based on price per km and total distance from the parcel
+            var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
+            if (parcel == null)
+                return NotFound("Parcel not found");
+
+            quoteDTO.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
+
+            quote = _mapper.Map(quoteDTO, quote);
+
+            _context.Quotes.Update(quote);
+            await _context.SaveChangesAsync();
+
+            return Ok("Quote updated");
         }
 
-        [HttpDelete("DeleteQuote{id}")]
-        public async Task<IActionResult> DeleteQuote(string id)
+        //Delete method for admin to delete a quote by id
+        [HttpDelete("AdminDeleteQuote/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminDeleteQuote(string id)
         {
             var quote = await _context.Quotes.FindAsync(id);
+
             if (quote == null)
                 return NotFound("Quote not found");
 
@@ -104,5 +125,11 @@ namespace MarteliveryAPI.Controllers
 
             return Ok("Quote deleted");
         }
+
+        /*---------*/
+        /*  USERS  */
+        /*---------*/
+
+        
     }
 }
