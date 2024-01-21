@@ -110,7 +110,7 @@ namespace MarteliveryAPI.Controllers
         /*  USERS  */
         /*---------*/
 
-        //Get method for user to get all of their own parcels info with Mapped DTO
+        //Get method for customer to get all of their own parcels info with Mapped DTO
         [HttpGet ("GetMyParcelsInfo")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetMyParcelsInfo()
@@ -125,7 +125,7 @@ namespace MarteliveryAPI.Controllers
             return Ok(parcelsDTO);
         }
 
-        //Post method for user to create a parcel with Mapped DTO
+        //Post method for customer to create a parcel with Mapped DTO
         [HttpPost ("UserCreateParcel")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserCreateParcel(CustomerParcelDTO parcelDTO)
@@ -140,7 +140,7 @@ namespace MarteliveryAPI.Controllers
             return Ok("Parcel created");
         }
 
-        //Put method for user to update his parcel by id with Mapped DTO
+        //Put method for customer to update his parcel by id with Mapped DTO
         [HttpPut ("UserUpdateParcel/{id}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserUpdateParcel(string id, CustomerParcelDTO parcelDTO)
@@ -166,7 +166,7 @@ namespace MarteliveryAPI.Controllers
             return Ok("Parcel updated");
         }
 
-        //Delete method for user to delete his parcel by id
+        //Delete method for customer to delete his parcel by id
         [HttpDelete ("UserDeleteParcel/{id}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UserDeleteParcel(string id)

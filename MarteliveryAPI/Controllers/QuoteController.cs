@@ -130,6 +130,7 @@ namespace MarteliveryAPI.Controllers
         /*  USERS  */
         /*---------*/
 
-        
+        //Get method for user to get all quotes info with Mapped DTO
+        [HttpGet ("UserGetAllQuotesInfo")]
     }
 }
