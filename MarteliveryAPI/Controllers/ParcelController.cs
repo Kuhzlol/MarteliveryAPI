@@ -126,9 +126,9 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Post method for customer to create a parcel with Mapped DTO
-        [HttpPost ("UserCreateParcel")]
+        [HttpPost ("CustomerCreateParcel")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> UserCreateParcel(CustomerParcelDTO parcelDTO)
+        public async Task<IActionResult> CustomerCreateParcel(CustomerParcelDTO parcelDTO)
         {
             var parcel = _mapper.Map<Parcel>(parcelDTO);
 
@@ -141,9 +141,9 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Put method for customer to update his parcel by id with Mapped DTO
-        [HttpPut ("UserUpdateParcel/{id}")]
+        [HttpPut ("CustomerUpdateParcel/{id}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> UserUpdateParcel(string id, CustomerParcelDTO parcelDTO)
+        public async Task<IActionResult> CustomerUpdateParcel(string id, CustomerParcelDTO parcelDTO)
         {
             if (parcelDTO == null)
                 return BadRequest("Model is empty");
@@ -167,9 +167,9 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Delete method for customer to delete his parcel by id
-        [HttpDelete ("UserDeleteParcel/{id}")]
+        [HttpDelete ("CustomerDeleteParcel/{id}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> UserDeleteParcel(string id)
+        public async Task<IActionResult> CustomerDeleteParcel(string id)
         {
             var parcel = await _context.Parcels.FindAsync(id);
 

@@ -5,6 +5,8 @@ using MarteliveryAPI.Models.Domain;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using MarteliveryAPI.Models.DTOs.Admin;
+using MarteliveryAPI.Models.DTOs.Carrier;
+using System.Security.Claims;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -130,7 +132,41 @@ namespace MarteliveryAPI.Controllers
         /*  USERS  */
         /*---------*/
 
-        //Get method for user to get all quotes info with Mapped DTO
-        [HttpGet ("UserGetAllQuotesInfo")]
+        //Get method for carrier to get all quotes info with Mapped DTO
+        [HttpGet ("GetMyQuotesInfo")]
+        [Authorize(Roles = "Carrier")]
+        public async Task<IActionResult> GetMyQuotesInfo()
+        {
+            var quotes = await _context.Quotes.Where(q => q.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
+
+            if (quotes.Count == 0)
+                return NotFound("Quotes not found");
+
+            var quotesDTO = _mapper.Map<List<CarrierQuoteDTO>>(quotes);
+
+            return Ok(quotesDTO);
+        }
+
+        //Post method for carrier to create a quote with Mapped DTO
+        [HttpPost("CarrierCreateQuote")]
+        [Authorize(Roles = "Carrier")]
+        public async Task<IActionResult> CarrierCreateQuote(CarrierQuoteDTO quoteDTO)
+        {
+            var quote = _mapper.Map<Quote>(quoteDTO);
+
+            quote.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            //Calculate total price based on price per km and total distance from the parcel
+            var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
+            if (parcel == null)
+                return NotFound("Parcel not found");
+
+            quoteDTO.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
+
+            _context.Quotes.Add(quote);
+            await _context.SaveChangesAsync();
+
+            return Ok("Quote created");
+        }
     }
 }
