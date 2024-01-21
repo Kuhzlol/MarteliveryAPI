@@ -18,12 +18,6 @@ namespace MarteliveryAPI.Controllers
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        /*public ParcelController(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }*/
-
         /*---------*/
         /*  ADMIN  */
         /*---------*/
@@ -38,7 +32,7 @@ namespace MarteliveryAPI.Controllers
             if (parcels.Count == 0)
                 return NotFound("Parcels not found");
 
-            var parcelsDTO = _mapper.Map<List<AdminParcelDTO>>(parcels);
+            var parcelsDTO = _mapper.Map<List<AdminParcelInfoDTO>>(parcels);
 
             return Ok(parcelsDTO);
         }
@@ -53,7 +47,7 @@ namespace MarteliveryAPI.Controllers
             if (parcel == null)
                 return NotFound("Parcel not found");
 
-            var parcelDTO = _mapper.Map<AdminParcelDTO>(parcel);
+            var parcelDTO = _mapper.Map<AdminParcelInfoDTO>(parcel);
 
             return Ok(parcelDTO);
         }

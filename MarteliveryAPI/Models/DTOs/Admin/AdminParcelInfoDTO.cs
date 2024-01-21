@@ -1,6 +1,6 @@
 ﻿namespace MarteliveryAPI.Models.DTOs.Admin
 {
-    public class AdminParcelDTO
+    public class AdminParcelInfoDTO
     {
         public string ParcelId { get; set; }
         public string PickupLocation { get; set; }

@@ -17,6 +17,8 @@ namespace MarteliveryAPI.Controllers
         /*  ADMIN  */
         /*---------*/
 
+        //Get method for admin to get all quotes info with Mapped DTO
+
         [HttpGet ("GetQuotesInfo")]
         public async Task<ActionResult<List<Quote>>> GetQuotesInfo()
         {
