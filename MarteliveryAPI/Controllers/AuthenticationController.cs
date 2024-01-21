@@ -1,6 +1,5 @@
 ﻿using MarteliveryAPI.Models.DTOs.User;
 using MarteliveryAPI.Services.Interfaces;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

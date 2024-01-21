@@ -38,7 +38,7 @@ var client = new SecretClient(keyVaultURL, credential);
 //Add DbContext
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseNpgsql(client.GetSecret("MarteliveryDbContext").Value.Value.ToString());
+    options.UseNpgsql(client.GetSecret("ConnectionString").Value.Value.ToString());
 });
 
 //Add cors to allow any origin, any method and any header

@@ -99,7 +99,7 @@ namespace MarteliveryAPI.Services
             if (checkUserLockout)
                 return new LoginResponse(false, null!, "User is locked out");
 
-            //Reset accessFailedCount if user successfully logged in
+            //Reset accessFailedCount if user successfully logged in before being locked out
             await userManager.ResetAccessFailedCountAsync(getUser);
 
             //Get user role

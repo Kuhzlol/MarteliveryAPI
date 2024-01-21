@@ -2,14 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using MarteliveryAPI.Data;
 using MarteliveryAPI.Models.Domain;
+using AutoMapper;
 
 namespace MarteliveryAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class QuoteController(DataContext context) : ControllerBase
+    public class QuoteController(DataContext context, IMapper mapper) : ControllerBase
     {
         private readonly DataContext _context = context;
+        private readonly IMapper _mapper = mapper;
+
+        /*---------*/
+        /*  ADMIN  */
+        /*---------*/
 
         [HttpGet ("GetQuotesInfo")]
         public async Task<ActionResult<List<Quote>>> GetQuotesInfo()

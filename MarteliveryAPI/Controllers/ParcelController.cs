@@ -13,16 +13,16 @@ namespace MarteliveryAPI.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class ParcelController : ControllerBase
+    public class ParcelController(DataContext context, IMapper mapper) : ControllerBase
     {
-        private readonly DataContext _context;
-        private readonly IMapper _mapper;
+        private readonly DataContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
-        public ParcelController(DataContext context, IMapper mapper)
+        /*public ParcelController(DataContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-        }
+        }*/
 
         /*---------*/
         /*  ADMIN  */

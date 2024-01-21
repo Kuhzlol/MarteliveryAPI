@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MarteliveryAPI.Data;
-using MarteliveryAPI.Models;
 using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.User;
@@ -15,17 +14,10 @@ namespace MarteliveryAPI.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class UserController : ControllerBase
+    public class UserController(DataContext context, IMapper mapper) : ControllerBase
     {
-        private readonly DataContext _context;
-
-        private readonly IMapper _mapper;
-
-        public UserController(DataContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+        private readonly DataContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         /*---------*/
         /*  ADMIN  */
