@@ -36,6 +36,7 @@ namespace MarteliveryAPI.Controllers
         }
 
         [HttpGet]
+        [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -43,7 +44,7 @@ namespace MarteliveryAPI.Controllers
                 return BadRequest("Error");
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
-            return Ok(result.Succeeded ? nameof(ConfirmEmail) : "Error");
+            return Ok(result.Succeeded ? "Your Email is now confirmed, Welcome to Martelivery !" : "Error");
         }
 
         [HttpPost("Login")]
