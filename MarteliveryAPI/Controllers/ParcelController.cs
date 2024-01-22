@@ -7,6 +7,7 @@ using System.Security.Claims;
 using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.Customer;
+using MarteliveryAPI.Models.DTOs.Carrier;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -106,9 +107,9 @@ namespace MarteliveryAPI.Controllers
             return Ok("Parcel deleted");
         }
 
-        /*---------*/
-        /*  USERS  */
-        /*---------*/
+        /*------------*/
+        /*  CUSTOMER  */
+        /*------------*/
 
         //Get method for customer to get all of their own parcels info with Mapped DTO
         [HttpGet ("GetMyParcelsInfo")]
@@ -123,6 +124,32 @@ namespace MarteliveryAPI.Controllers
             var parcelsDTO = _mapper.Map<List<CustomerParcelDTO>>(parcels);
 
             return Ok(parcelsDTO);
+        }
+
+        //Get method for customer to get all quotes linked to their parcels with Mapped DTO
+        [HttpGet ("GetMyQuotesInfo")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetMyQuotesInfo()
+        {
+            var parcels = await _context.Parcels.Where(p => p.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
+
+            if (parcels.Count == 0)
+                return NotFound("Parcels not found");
+
+            var quotes = new List<Quote>();
+            foreach (var parcel in parcels)
+            {
+                var quote = await _context.Quotes.FirstOrDefaultAsync(q => q.ParcelId == parcel.ParcelId);
+                if (quote != null)
+                    quotes.Add(quote);
+            }
+
+            if (quotes.Count == 0)
+                return NotFound("Quotes not found");
+
+            var quotesDTO = _mapper.Map<List<CarrierQuoteDTO>>(quotes);
+
+            return Ok(quotesDTO);
         }
 
         //Post method for customer to create a parcel with Mapped DTO

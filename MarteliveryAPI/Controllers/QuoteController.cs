@@ -128,9 +128,9 @@ namespace MarteliveryAPI.Controllers
             return Ok("Quote deleted");
         }
 
-        /*---------*/
-        /*  USERS  */
-        /*---------*/
+        /*-----------*/
+        /*  CARRIER  */
+        /*-----------*/
 
         //Get method for carrier to get all quotes info with Mapped DTO
         [HttpGet ("GetMyQuotesInfo")]
@@ -167,6 +167,39 @@ namespace MarteliveryAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Quote created");
+        }
+
+        //Put method for carrier to update a quote by id with Mapped DTO
+        [HttpPut("CarrierUpdateQuote/{id}")]
+        [Authorize(Roles = "Carrier")]
+        public async Task<IActionResult> CarrierUpdateQuote(string id, CarrierQuoteDTO quoteDTO)
+        {
+            if (quoteDTO == null)
+                return BadRequest("Model is empty");
+            
+            var quote = await _context.Quotes.FindAsync(id);
+
+            //Check if quote belongs to the carrier
+            if (quote.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return BadRequest("Quote doesn't belong to the carrier");
+
+            //Check if quote exists
+            if (quote == null)
+                return NotFound("Quote not found");
+
+            quote = _mapper.Map(quoteDTO, quote);
+
+            //Calculate total price based on price per km and total distance from the parcel
+            var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
+            if (parcel == null)
+                return NotFound("Parcel not found");
+
+            quoteDTO.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
+
+            _context.Quotes.Update(quote);
+            await _context.SaveChangesAsync();
+
+            return Ok("Quote updated");
         }
     }
 }
