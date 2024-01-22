@@ -11,10 +11,11 @@ using Azure.Security.KeyVault.Secrets;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using MarteliveryAPI.Services.Interfaces;
-using MarteliveryAPI.Services;
 using MarteliveryAPI.Models.Domain;
 using Microsoft.Extensions.Configuration;
+using MarteliveryAPI.Services.UserServices;
+using MarteliveryAPI.Services.EmailServices;
+using MarteliveryAPI.CustomTokenProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,12 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(client.GetSecret("ConnectionString").Value.Value.ToString());
 });
 
+//Add Email Service
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 //Add cors to allow any origin, any method and any header
 builder.Services.AddCors();
 
@@ -62,11 +69,18 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
     //User Settings
     options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedEmail = false;
+
+    //SignIn Settings
+    options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedPhoneNumber = false;
+
+    //Token Settings
+    options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
 })
     .AddEntityFrameworkStores<DataContext>()
     .AddSignInManager()
+    .AddDefaultTokenProviders()
+    .AddTokenProvider<EmailConfirmationTokenProvider<User>>("emailconfirmation")
     .AddRoles<IdentityRole>();
 
 //JWT

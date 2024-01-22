@@ -3,7 +3,7 @@ using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.User;
 
-namespace MarteliveryAPI.Services.Profiles
+namespace MarteliveryAPI.Profiles
 {
     public class UserProfile : Profile
     {

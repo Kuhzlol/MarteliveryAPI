@@ -3,7 +3,7 @@ using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.Customer;
 
-namespace MarteliveryAPI.Services.Profiles
+namespace MarteliveryAPI.Profiles
 {
     public class ParcelProfile : Profile
     {

@@ -2,16 +2,14 @@
 using Azure.Security.KeyVault.Secrets;
 using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.User;
-using MarteliveryAPI.Services.Interfaces;
-using MarteliveryAPI.Services.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static MarteliveryAPI.Services.Options.UserResponseOption;
+using static MarteliveryAPI.Services.UserServices.UserResponse;
 
-namespace MarteliveryAPI.Services
+namespace MarteliveryAPI.Services.UserServices
 {
     public class UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IUser
     {
@@ -48,6 +46,7 @@ namespace MarteliveryAPI.Services
             //Assign Default Role : "Admin" to first registered user; Assign "Customer" if IsCustomer is true, else assign "Carrier"
             var checkAdmin = await roleManager.FindByNameAsync("Admin");
             var checkCustomer = await roleManager.FindByNameAsync("Customer");
+            var checkCarrier = await roleManager.FindByNameAsync("Carrier");
             if (checkAdmin is null)
             {
                 await roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
@@ -62,15 +61,16 @@ namespace MarteliveryAPI.Services
 
                 return new GeneralResponse(true, "Account Created");
             }
-            else
+            else if (checkCarrier is null || newUser.IsCustomer == false)
             {
-                var checkCarrier = await roleManager.FindByNameAsync("Carrier");
-                if (checkCarrier is null)
-                    await roleManager.CreateAsync(new IdentityRole() { Name = "Carrier" });
-
+                await roleManager.CreateAsync(new IdentityRole() { Name = "Carrier" });
                 await userManager.AddToRoleAsync(newUser, "Carrier");
 
                 return new GeneralResponse(true, "Account Created");
+            }
+            else
+            {
+                return new GeneralResponse(false, "An error occurred, please try again");
             }
         }
 
@@ -99,6 +99,11 @@ namespace MarteliveryAPI.Services
             if (checkUserLockout)
                 return new LoginResponse(false, null!, "User is locked out");
 
+            //Check if user email is confirmed
+            var checkUserEmailConfirmed = await userManager.IsEmailConfirmedAsync(getUser);
+            if (!checkUserEmailConfirmed)
+                return new LoginResponse(false, null!, "User email is not confirmed");
+
             //Reset accessFailedCount if user successfully logged in before being locked out
             await userManager.ResetAccessFailedCountAsync(getUser);
 
@@ -106,7 +111,7 @@ namespace MarteliveryAPI.Services
             var getUserRole = await userManager.GetRolesAsync(getUser);
 
             //Create user session
-            var userSession = new UserSessionOption(getUser.Id, getUser.FirstName, getUser.LastName, getUser.Email, getUserRole.First());
+            var userSession = new UserSession(getUser.Id, getUser.FirstName, getUser.LastName, getUser.Email, getUserRole.First());
 
             //Generate token
             string token = GenerateToken(userSession);
@@ -115,12 +120,12 @@ namespace MarteliveryAPI.Services
             return new LoginResponse(true, token!, "Login completed");
         }
 
-        private string GenerateToken(UserSessionOption user)
+        private string GenerateToken(UserSession user)
         {
             var keyVaultURL = new Uri(config.GetSection("KeyVaultURL").Value!);
             var credential = new DefaultAzureCredential();
             var client = new SecretClient(keyVaultURL, credential);
-            
+
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(client.GetSecret("JWTKey").Value.Value.ToString()));
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha384);

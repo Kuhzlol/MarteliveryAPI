@@ -1,7 +1,7 @@
 ﻿using MarteliveryAPI.Models.DTOs.User;
-using static MarteliveryAPI.Services.Options.UserResponseOption;
+using static MarteliveryAPI.Services.UserServices.UserResponse;
 
-namespace MarteliveryAPI.Services.Interfaces
+namespace MarteliveryAPI.Services.UserServices
 {
     public interface IUser
     {
