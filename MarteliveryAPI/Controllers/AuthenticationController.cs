@@ -35,6 +35,13 @@ namespace MarteliveryAPI.Controllers
             return Ok(response);
         }
 
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserLoginDTO loginDTO)
+        {
+            var response = await user.LoginAccount(loginDTO);
+            return Ok(response);
+        }
+
         [HttpGet]
         [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
@@ -45,13 +52,6 @@ namespace MarteliveryAPI.Controllers
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
             return Ok(result.Succeeded ? "Your Email is now confirmed, Welcome to Martelivery !" : "Error");
-        }
-
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login(UserLoginDTO loginDTO)
-        {
-            var response = await user.LoginAccount(loginDTO);
-            return Ok(response);
         }
     }
 }

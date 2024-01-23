@@ -83,6 +83,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddTokenProvider<EmailConfirmationTokenProvider<User>>("emailconfirmation")
     .AddRoles<IdentityRole>();
 
+builder.Services.Configure<EmailConfirmationTokenProviderOptions>(opt => opt.TokenLifespan = TimeSpan.FromDays(1));
+
 //JWT
 builder.Services.AddAuthentication(options =>
 {
