@@ -28,7 +28,15 @@ namespace MarteliveryAPI.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { token, email = userDTO.Email }, Request.Scheme);
 
-                var message = new Message(new string[] { userDTO.Email }, "Confirm your Email", confirmationLink, null);
+                string body = string.Empty;
+                using (StreamReader reader = new StreamReader("Services/EmailServices/EmailConfirmation.html"))
+                {
+                    body = await reader.ReadToEndAsync();
+                }
+                body = body.Replace("{ConfirmationLink}", confirmationLink);
+                body = body.Replace("{UserName}", userDTO.Email);
+
+                var message = new Message(new string[] { userDTO.Email }, "Account Confirmation", body, null);
                 await _emailSender.SendEmailAsync(message);
             }
 
