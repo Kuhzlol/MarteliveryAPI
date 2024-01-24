@@ -21,7 +21,7 @@ namespace MarteliveryAPI.Controllers
         {
             var response = await user.CreateAccount(userDTO);
 
-            //Send email confirmation to user email address if account is created successfully
+            //Send confirmation mail to the user email address if his account is created successfully
             if (response.Flag == true)
             {
                 var user = await _userManager.FindByEmailAsync(userDTO.Email);
@@ -29,18 +29,23 @@ namespace MarteliveryAPI.Controllers
                 var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { token, email = userDTO.Email }, Request.Scheme);
 
                 string body = string.Empty;
-                using (StreamReader reader = new StreamReader("Services/EmailServices/EmailConfirmation.html"))
+                using (StreamReader reader = new StreamReader("wwwroot/html/EmailConfirmation.html"))
                 {
                     body = await reader.ReadToEndAsync();
                 }
                 body = body.Replace("{ConfirmationLink}", confirmationLink);
                 body = body.Replace("{UserName}", userDTO.Email);
+                
 
                 var message = new Message(new string[] { userDTO.Email }, "Account Confirmation", body, null);
                 await _emailSender.SendEmailAsync(message);
-            }
 
-            return Ok(response);
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(response);
+            }            
         }
 
         [HttpPost("Login")]

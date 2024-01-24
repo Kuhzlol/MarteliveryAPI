@@ -42,4 +42,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\html\EmailConfirmation.html" />
+  </ItemGroup>
+
 </Project>

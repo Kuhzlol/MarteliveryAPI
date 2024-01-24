@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using MarteliveryAPI.Services.UserServices;
 using MarteliveryAPI.Services.EmailServices;
 using MarteliveryAPI.CustomTokenProviders;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -133,6 +134,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
