@@ -156,6 +156,11 @@ namespace MarteliveryAPI.Controllers
 
             quote.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            //Check if quote already exists for the parcel from the carrier
+            var quoteExists = await _context.Quotes.Where(q => q.ParcelId == quoteDTO.ParcelId && q.UserId == quote.UserId).FirstOrDefaultAsync();
+            if (quoteExists != null)
+                return BadRequest("Quote already exists for the parcel from the carrier");
+
             var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
             if (parcel == null)
                 return NotFound("Parcel not found");
