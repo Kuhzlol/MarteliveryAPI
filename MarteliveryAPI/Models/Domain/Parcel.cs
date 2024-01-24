@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MarteliveryAPI.Models.Domain
@@ -16,20 +17,25 @@ namespace MarteliveryAPI.Models.Domain
         [Column("delivery_location", TypeName = "varchar(250)")]
         public required string DeliveryLocation { get; set; }
 
-        [Column("total_distance", TypeName = "float")]
-        public required float TotalDistance { get; set; }
+        [Column("total_distance")]
+        [Precision(6, 2)]
+        public required decimal TotalDistance { get; set; }
 
         [Column("length")]
-        public required float Length { get; set; }
+        [Precision(6, 2)]
+        public required decimal Length { get; set; }
 
         [Column("width")]
-        public required float Width { get; set; }
+        [Precision(6, 2)]
+        public required decimal Width { get; set; }
 
         [Column("height")]
-        public required float Height { get; set; }
+        [Precision(6, 2)]
+        public required decimal Height { get; set; }
 
         [Column("weight")]
-        public required float Weight { get; set; }
+        [Precision(6, 2)]
+        public required decimal Weight { get; set; }
 
         [Column("user_id")]
         public required string UserId { get; set; }

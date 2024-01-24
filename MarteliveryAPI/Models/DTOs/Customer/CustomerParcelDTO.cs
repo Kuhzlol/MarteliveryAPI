@@ -4,10 +4,10 @@
     {
         public required string PickupLocation { get; set; }
         public required string DeliveryLocation { get; set; }
-        public required float TotalDistance { get; set; }
-        public required float Length { get; set; }
-        public required float Width { get; set; }
-        public required float Height { get; set; }
-        public required float Weight { get; set; }
+        public required decimal TotalDistance { get; set; }
+        public required decimal Length { get; set; }
+        public required decimal Width { get; set; }
+        public required decimal Height { get; set; }
+        public required decimal Weight { get; set; }
     }
 }

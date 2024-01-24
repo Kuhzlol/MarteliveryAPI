@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarteliveryAPI.Models.Domain
 {
@@ -11,10 +12,12 @@ namespace MarteliveryAPI.Models.Domain
         public string QuoteId { get; set; } = Guid.NewGuid().ToString();
 
         [Column("price_per_km")]
-        public required float PricePerKm { get; set; }
+        [Precision(4, 2)]
+        public required decimal PricePerKm { get; set; }
 
         [Column("total_price")]
-        public required float TotalPrice { get; set; }
+        [Precision(6, 2)]
+        public required decimal TotalPrice { get; set; }
 
         [Column("status", TypeName = "varchar(250)")]
         public string? Status { get; set; } = "Pending";
