@@ -156,11 +156,11 @@ namespace MarteliveryAPI.Controllers
 
             quote.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //Calculate total price based on price per km and total distance from the parcel
             var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
             if (parcel == null)
                 return NotFound("Parcel not found");
 
+            //Calculate total price based on price per km and total distance from the parcel
             quoteDTO.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
 
             _context.Quotes.Add(quote);
