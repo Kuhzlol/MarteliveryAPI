@@ -166,7 +166,7 @@ namespace MarteliveryAPI.Controllers
                 return NotFound("Parcel not found");
 
             //Calculate total price based on price per km and total distance from the parcel
-            quoteDTO.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
+            quote.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
 
             _context.Quotes.Add(quote);
             await _context.SaveChangesAsync();
@@ -191,6 +191,14 @@ namespace MarteliveryAPI.Controllers
             //Check if quote exists
             if (quote == null)
                 return NotFound("Quote not found");
+
+            //Check if quote status is different from pending
+            if (quote.Status != "Pending")
+                return BadRequest("Quote status is different from \"Pending\", hence the quote can't be updated");
+
+            //Check if parcelid is different from the one in the quote
+            if (quote.ParcelId != quoteDTO.ParcelId)
+                return BadRequest("ParcelId is different from the one in the quote");
 
             quote = _mapper.Map(quoteDTO, quote);
 
