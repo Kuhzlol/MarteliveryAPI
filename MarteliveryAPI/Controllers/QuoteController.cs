@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.Carrier;
 using System.Security.Claims;
+using MarteliveryAPI.Models.DTOs.User;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -142,7 +143,7 @@ namespace MarteliveryAPI.Controllers
             if (quotes.Count == 0)
                 return NotFound("Quotes not found");
 
-            var quotesDTO = _mapper.Map<List<CarrierQuoteDTO>>(quotes);
+            var quotesDTO = _mapper.Map<List<QuoteInfoDTO>>(quotes);
 
             return Ok(quotesDTO);
         }
@@ -159,7 +160,7 @@ namespace MarteliveryAPI.Controllers
             //Check if quote already exists for the parcel from the carrier
             var quoteExists = await _context.Quotes.Where(q => q.ParcelId == quoteDTO.ParcelId && q.UserId == quote.UserId).FirstOrDefaultAsync();
             if (quoteExists != null)
-                return BadRequest("Quote already exists for this parcel from the carrier");
+                return BadRequest("The carrier has already created a quote for this parcel");
 
             var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
             if (parcel == null)
@@ -200,14 +201,14 @@ namespace MarteliveryAPI.Controllers
             if (quote.ParcelId != quoteDTO.ParcelId)
                 return BadRequest("ParcelId is different from the one in the quote");
 
-            quote = _mapper.Map(quoteDTO, quote);
-
             //Calculate total price based on price per km and total distance from the parcel
             var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
             if (parcel == null)
                 return NotFound("Parcel not found");
 
-            quoteDTO.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
+            quote = _mapper.Map(quoteDTO, quote);
+
+            quote.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
 
             _context.Quotes.Update(quote);
             await _context.SaveChangesAsync();

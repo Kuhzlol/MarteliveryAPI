@@ -8,6 +8,7 @@ using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.Customer;
 using MarteliveryAPI.Models.DTOs.Carrier;
+using MarteliveryAPI.Models.DTOs.User;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -39,11 +40,11 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Get method for admin to get parcel info by id with Mapped DTO
-        [HttpGet ("AdminGetParcelInfo/{id}")]
+        [HttpGet ("AdminGetParcelInfo/{parcelId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminGetParcelInfo(string id)
+        public async Task<IActionResult> AdminGetParcelInfo(string parcelId)
         {
-            var parcel = await _context.Parcels.FindAsync(id);
+            var parcel = await _context.Parcels.FindAsync(parcelId);
 
             if (parcel == null)
                 return NotFound("Parcel not found");
@@ -70,14 +71,14 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Put method for admin to update a parcel by id with Mapped DTO
-        [HttpPut("AdminUpdateParcel/{id}")]
+        [HttpPut("AdminUpdateParcel/{parcelId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminUpdateParcel(string id, AdminParcelUpdateDTO parcelDTO)
+        public async Task<IActionResult> AdminUpdateParcel(string parcelId, AdminParcelUpdateDTO parcelDTO)
         {
             if (parcelDTO == null)
                 return BadRequest("Model is empty");
             
-            var parcel = await _context.Parcels.FindAsync(id);
+            var parcel = await _context.Parcels.FindAsync(parcelId);
 
             //Check if parcel exists
             if (parcel == null)
@@ -92,11 +93,11 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Delete method for admin to delete a parcel by id
-        [HttpDelete("AdminDeleteParcel/{id}")]
+        [HttpDelete("AdminDeleteParcel/{parcelId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminDeleteParcel(string id)
+        public async Task<IActionResult> AdminDeleteParcel(string parcelId)
         {
-            var parcel = await _context.Parcels.FindAsync(id);
+            var parcel = await _context.Parcels.FindAsync(parcelId);
 
             if (parcel == null)
                 return NotFound("Parcel not found");
@@ -136,7 +137,7 @@ namespace MarteliveryAPI.Controllers
             if (quotes.Count == 0)
                 return NotFound("Quotes not found");
 
-            var quotesDTO = _mapper.Map<List<CustomerQuoteDTO>>(quotes);
+            var quotesDTO = _mapper.Map<List<QuoteInfoDTO>>(quotes);
 
             return Ok(quotesDTO);
         }
@@ -157,14 +158,14 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Put method for customer to update his parcel by id with Mapped DTO
-        [HttpPut ("CustomerUpdateParcel/{id}")]
+        [HttpPut ("CustomerUpdateParcel/{parcelId}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CustomerUpdateParcel(string id, CustomerParcelDTO parcelDTO)
+        public async Task<IActionResult> CustomerUpdateParcel(string parcelId, CustomerParcelDTO parcelDTO)
         {
             if (parcelDTO == null)
                 return BadRequest("Model is empty");
             
-            var parcel = await _context.Parcels.FindAsync(id);
+            var parcel = await _context.Parcels.FindAsync(parcelId);
 
             //Check if Customer is the owner of the parcel
             if (parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -188,19 +189,20 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Put method for customer to accept a quote linked to his parcel by id with Mapped DTO
-        [HttpPut ("CustomerAcceptQuote/{id}")]
+        [HttpPut ("CustomerAcceptQuote/{quoteId}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CustomerAcceptQuote(string id, CustomerAcceptQuoteDTO acceptQuoteDTO)
+        public async Task<IActionResult> CustomerAcceptQuote(string quoteId, CustomerAcceptQuoteDTO acceptQuoteDTO)
         {
-            var quote = await _context.Quotes.FindAsync(id);
-
-            //Check if Customer is the owner of the parcel
-            /*if (quote.Parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
-                return Unauthorized("You are not the owner of this parcel");*/
+            var quote = await _context.Quotes.FindAsync(quoteId);
 
             //Check if quote exists
             if (quote == null)
                 return NotFound("Quote not found");
+
+            //Check if Customer is the owner of the parcel linked to the quote that he wants to accept
+            var parcel = await _context.Parcels.FindAsync(quote.ParcelId);
+            if (parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return Unauthorized("You are not the owner of this parcel");
 
             //Check if quote status is different from pending
             if (quote.Status == "Pending")
@@ -216,8 +218,6 @@ namespace MarteliveryAPI.Controllers
                     q.Status = "Rejected";
             }
 
-            //quote.ParcelId = quote.Parcel.ParcelId;
-
             quote = _mapper.Map(acceptQuoteDTO, quote);
 
             _context.Quotes.Update(quote);
@@ -227,11 +227,11 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Delete method for customer to delete his parcel by id
-        [HttpDelete ("CustomerDeleteParcel/{id}")]
+        [HttpDelete ("CustomerDeleteParcel/{parcelId}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CustomerDeleteParcel(string id)
+        public async Task<IActionResult> CustomerDeleteParcel(string parcelId)
         {
-            var parcel = await _context.Parcels.FindAsync(id);
+            var parcel = await _context.Parcels.FindAsync(parcelId);
 
             //Check if Customer is the owner of the parcel
             if (parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))

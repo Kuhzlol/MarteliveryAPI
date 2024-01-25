@@ -2,6 +2,7 @@
 using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.Carrier;
+using MarteliveryAPI.Models.DTOs.User;
 
 namespace MarteliveryAPI.Profiles
 {
@@ -14,6 +15,7 @@ namespace MarteliveryAPI.Profiles
             CreateMap<AdminQuoteUpdateDTO, Quote>().ReverseMap();
 
             CreateMap<Quote, CarrierQuoteDTO>().ReverseMap();
+            CreateMap<Quote, QuoteInfoDTO>().ReverseMap();
             CreateMap<CarrierQuoteDTO, Quote>().ReverseMap();
         }
     }
