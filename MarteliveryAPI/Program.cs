@@ -4,19 +4,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using System.Security.Claims;
-using MarteliveryAPI.Controllers;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 using MarteliveryAPI.Models.Domain;
-using Microsoft.Extensions.Configuration;
 using MarteliveryAPI.Services.UserServices;
 using MarteliveryAPI.Services.EmailServices;
 using MarteliveryAPI.CustomTokenProviders;
-using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +21,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Add AutoMapper
+//AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-//Add KeyVault
+//KeyVault
 var keyVaultURL = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
 var credential = new DefaultAzureCredential();
 
@@ -37,22 +32,24 @@ builder.Configuration.AddAzureKeyVault(keyVaultURL, credential);
 
 var client = new SecretClient(keyVaultURL, credential);
 
-//Add DbContext
+//DbContext
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseNpgsql(client.GetSecret("ConnectionString").Value.Value.ToString());
 });
 
-//Add Email Service
+//Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
-//Add cors to allow any origin, any method and any header
+//CORS to allow any origin, any method and any header
 builder.Services.AddCors();
 
-//Add Identity & JWT Authentication
+/*******************************/
+/*Identity & JWT Authentication*/
+/*******************************/
 //Identity
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -118,7 +115,7 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-// Dependency Injection
+//Dependency Injection
 builder.Services.AddScoped<IUser, UserService>();
 
 builder.Services.AddAuthentication();
@@ -126,7 +123,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
