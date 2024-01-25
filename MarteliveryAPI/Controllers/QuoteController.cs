@@ -195,7 +195,7 @@ namespace MarteliveryAPI.Controllers
 
             //Check if quote status is different from pending
             if (quote.Status != "Pending")
-                return BadRequest("Quote status is different from \"Pending\", hence the quote can't be updated");
+                return BadRequest("Quote with a status different from \"Pending\" can't be updated");
 
             //Check if parcelid is different from the one in the quote
             if (quote.ParcelId != quoteDTO.ParcelId)
@@ -214,6 +214,30 @@ namespace MarteliveryAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Quote updated");
+        }
+
+        //Delete method for carrier to delete a quote by id
+        [HttpDelete("CarrierDeleteQuote/{id}")]
+        [Authorize(Roles = "Carrier")]
+        public async Task<IActionResult> CarrierDeleteQuote(string id)
+        {
+            var quote = await _context.Quotes.FindAsync(id);
+
+            //Check if quote belongs to the carrier
+            if (quote.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return BadRequest("Quote doesn't belong to the carrier");
+
+            if (quote == null)
+                return NotFound("Quote not found");
+
+            //Check if quote status is different from pending
+            if (quote.Status != "Pending")
+                return BadRequest("Quote with a status different from \"Pending\" can't be deleted");
+
+            _context.Quotes.Remove(quote);
+            await _context.SaveChangesAsync();
+
+            return Ok("Quote deleted");
         }
     }
 }
