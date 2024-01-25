@@ -131,23 +131,12 @@ namespace MarteliveryAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetMyQuotesInfo()
         {
-            var parcels = await _context.Parcels.Where(p => p.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
-
-            if (parcels.Count == 0)
-                return NotFound("Parcels not found");
-
-            var quotes = new List<Quote>();
-            foreach (var parcel in parcels)
-            {
-                var quote = await _context.Quotes.FirstOrDefaultAsync(q => q.ParcelId == parcel.ParcelId);
-                if (quote != null)
-                    quotes.Add(quote);
-            }
+            var quotes = await _context.Quotes.Where(q => q.Parcel.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
 
             if (quotes.Count == 0)
                 return NotFound("Quotes not found");
 
-            var quotesDTO = _mapper.Map<List<CarrierQuoteDTO>>(quotes);
+            var quotesDTO = _mapper.Map<List<CustomerQuoteDTO>>(quotes);
 
             return Ok(quotesDTO);
         }
@@ -185,12 +174,56 @@ namespace MarteliveryAPI.Controllers
             if (parcel == null)
                 return NotFound("Parcel not found");
 
+            //Check if parcel is already linked to a quote
+            var quote = await _context.Quotes.FirstOrDefaultAsync(q => q.ParcelId == parcel.ParcelId);
+            if (quote != null)
+                return BadRequest("Parcel already linked to a quote can't be updated");
+
             parcel = _mapper.Map(parcelDTO, parcel);
 
             _context.Parcels.Update(parcel);
             await _context.SaveChangesAsync();
 
             return Ok("Parcel updated");
+        }
+
+        //Put method for customer to accept a quote linked to his parcel by id with Mapped DTO
+        [HttpPut ("CustomerAcceptQuote/{id}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CustomerAcceptQuote(string id, CustomerAcceptQuoteDTO acceptQuoteDTO)
+        {
+            var quote = await _context.Quotes.FindAsync(id);
+
+            //Check if Customer is the owner of the parcel
+            /*if (quote.Parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return Unauthorized("You are not the owner of this parcel");*/
+
+            //Check if quote exists
+            if (quote == null)
+                return NotFound("Quote not found");
+
+            //Check if quote status is different from pending
+            if (quote.Status == "Pending")
+                acceptQuoteDTO.Status = "Accepted";
+            else
+                return BadRequest("A quote has already been accepted for this parcel");
+
+            //Set all other quotes linked to the parcel to "Rejected"
+            var quotes = await _context.Quotes.Where(q => q.ParcelId == quote.ParcelId).ToListAsync();
+            foreach (var q in quotes)
+            {
+                if (q.QuoteId != quote.QuoteId)
+                    q.Status = "Rejected";
+            }
+
+            //quote.ParcelId = quote.Parcel.ParcelId;
+
+            quote = _mapper.Map(acceptQuoteDTO, quote);
+
+            _context.Quotes.Update(quote);
+            await _context.SaveChangesAsync();
+
+            return Ok("Quote accepted");
         }
 
         //Delete method for customer to delete his parcel by id
@@ -206,6 +239,11 @@ namespace MarteliveryAPI.Controllers
 
             if (parcel == null)
                 return NotFound("Parcel not found");
+
+            //Check if parcel is already linked to a quote
+            var quote = await _context.Quotes.FirstOrDefaultAsync(q => q.ParcelId == parcel.ParcelId);
+            if (quote != null)
+                return BadRequest("Parcel already linked to a quote can't be deleted");
 
             _context.Parcels.Remove(parcel);
             await _context.SaveChangesAsync();
