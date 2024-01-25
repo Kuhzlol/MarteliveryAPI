@@ -56,13 +56,6 @@ namespace MarteliveryAPI.Controllers
             return Ok(response);
         }
 
-        [HttpPost("RefreshToken")]
-        public ActionResult<LoginResponse> RefreshToken(UserSession userSession)
-        {
-            var response = user.RefreshToken(userSession);
-            return Ok(response);
-        }
-
         [HttpGet]
         [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
