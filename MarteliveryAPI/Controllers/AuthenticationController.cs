@@ -5,6 +5,7 @@ using MarteliveryAPI.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static MarteliveryAPI.Services.UserServices.UserResponse;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -52,6 +53,13 @@ namespace MarteliveryAPI.Controllers
         public async Task<IActionResult> Login(UserLoginDTO loginDTO)
         {
             var response = await user.LoginAccount(loginDTO);
+            return Ok(response);
+        }
+
+        [HttpPost("RefreshToken")]
+        public ActionResult<LoginResponse> RefreshToken(UserSession userSession)
+        {
+            var response = user.RefreshToken(userSession);
             return Ok(response);
         }
 

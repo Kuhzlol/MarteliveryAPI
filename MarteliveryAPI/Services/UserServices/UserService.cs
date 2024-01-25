@@ -117,7 +117,7 @@ namespace MarteliveryAPI.Services.UserServices
             string token = GenerateToken(userSession);
 
             // Return token if login is successful
-            return new LoginResponse(true, token!, "Login completed");
+            return new LoginResponse(true, "Login completed", token!);
         }
 
         private string GenerateToken(UserSession user)

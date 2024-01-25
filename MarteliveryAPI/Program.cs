@@ -42,6 +42,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 
+//Dependency Injection
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 //CORS to allow any origin, any method and any header
