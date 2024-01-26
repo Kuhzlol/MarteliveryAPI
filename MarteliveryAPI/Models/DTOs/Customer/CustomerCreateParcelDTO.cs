@@ -1,8 +1,7 @@
-﻿namespace MarteliveryAPI.Models.DTOs.User
+﻿namespace MarteliveryAPI.Models.DTOs.Customer
 {
-    public class ParcelInfoDTO
+    public class CustomerCreateParcelDTO
     {
-        public required string ParcelId { get; set; }
         public required string PickupLocation { get; set; }
         public required string DeliveryLocation { get; set; }
         public required decimal TotalDistance { get; set; }
@@ -10,6 +9,5 @@
         public required decimal Width { get; set; }
         public required decimal Height { get; set; }
         public required decimal Weight { get; set; }
-        public required string UserId { get; set; }
     }
 }

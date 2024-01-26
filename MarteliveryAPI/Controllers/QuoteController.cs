@@ -144,7 +144,7 @@ namespace MarteliveryAPI.Controllers
             if (quotes.Count == 0)
                 return NotFound("Quotes not found");
 
-            var quotesDTO = _mapper.Map<List<QuoteInfoDTO>>(quotes);
+            var quotesDTO = _mapper.Map<List<GetQuoteInfoDTO>>(quotes);
 
             return Ok(quotesDTO);
         }
@@ -260,7 +260,7 @@ namespace MarteliveryAPI.Controllers
             if (quotes.Count == 0)
                 return NotFound("Quotes not found");
 
-            var quotesDTO = _mapper.Map<List<QuoteInfoDTO>>(quotes);
+            var quotesDTO = _mapper.Map<List<GetQuoteInfoDTO>>(quotes);
 
             return Ok(quotesDTO);
         }

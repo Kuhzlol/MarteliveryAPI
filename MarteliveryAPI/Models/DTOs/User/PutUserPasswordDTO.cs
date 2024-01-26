@@ -1,6 +1,6 @@
 ﻿namespace MarteliveryAPI.Models.DTOs.User
 {
-    public class UserPasswordUpdateDTO
+    public class PutUserPasswordDTO
     {
         public required string Password { get; set; }
     }

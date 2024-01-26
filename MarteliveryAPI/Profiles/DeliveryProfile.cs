@@ -10,7 +10,7 @@ namespace MarteliveryAPI.Profiles
     {
         public DeliveryProfile()
         {
-            CreateMap<Delivery, DeliveryInfoDTO>().ReverseMap();
+            CreateMap<Delivery, GetDeliveryInfoDTO>().ReverseMap();
             CreateMap<AdminCreateDeliveryDTO, Delivery>().ReverseMap();
             CreateMap<AdminUpdateDeliveryDTO, Delivery>().ReverseMap();
 
