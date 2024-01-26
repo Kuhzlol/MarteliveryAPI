@@ -16,7 +16,7 @@ namespace MarteliveryAPI.Profiles
             CreateMap<AdminUpdateQuoteDTO, Quote>().ReverseMap();
 
             CreateMap<Quote, CarrierQuoteDTO>().ReverseMap();
-            CreateMap<Quote, QuoteInfoDTO>().ReverseMap();
+            CreateMap<Quote, GetQuoteInfoDTO>().ReverseMap();
             CreateMap<CarrierQuoteDTO, Quote>().ReverseMap();
             CreateMap<CustomerAcceptQuoteDTO, Quote>().ReverseMap();
         }

@@ -1,6 +1,6 @@
 ﻿namespace MarteliveryAPI.Models.DTOs.User
 {
-    public class DeliveryInfoDTO
+    public class GetDeliveryInfoDTO
     {
         public string DeliveryId { get; set; }
         public DateTime? PickupTime { get; set; }

@@ -13,9 +13,9 @@ namespace MarteliveryAPI.Profiles
             CreateMap<AdminUserInfoDTO, User>().ReverseMap();
             CreateMap<AdminUpdateUserDTO, User>().ReverseMap();
 
-            CreateMap<User, UserInfoDTO>().ReverseMap();
-            CreateMap<UserInfoUpdateDTO, User>().ReverseMap();
-            CreateMap<UserPasswordUpdateDTO, User>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password)).ReverseMap();
+            CreateMap<User, GetUserInfoDTO>().ReverseMap();
+            CreateMap<PutUserInfoDTO, User>().ReverseMap();
+            CreateMap<PutUserPasswordDTO, User>().ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password)).ReverseMap();
         }
     }
 }

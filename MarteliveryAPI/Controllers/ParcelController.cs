@@ -122,7 +122,7 @@ namespace MarteliveryAPI.Controllers
             if (parcels.Count == 0)
                 return NotFound("Parcels not found");
 
-            var parcelsDTO = _mapper.Map<List<CustomerParcelDTO>>(parcels);
+            var parcelsDTO = _mapper.Map<List<CustomerCreateParcelDTO>>(parcels);
 
             return Ok(parcelsDTO);
         }
@@ -130,7 +130,7 @@ namespace MarteliveryAPI.Controllers
         //Post method for customer to create a parcel with Mapped DTO
         [HttpPost ("CustomerCreateParcel")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CustomerCreateParcel(CustomerParcelDTO parcelDTO)
+        public async Task<IActionResult> CustomerCreateParcel(CustomerCreateParcelDTO parcelDTO)
         {
             var parcel = _mapper.Map<Parcel>(parcelDTO);
 
@@ -145,7 +145,7 @@ namespace MarteliveryAPI.Controllers
         //Put method for customer to update his parcel by id with Mapped DTO
         [HttpPut ("CustomerUpdateParcel/{parcelId}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CustomerUpdateParcel(string parcelId, CustomerParcelDTO parcelDTO)
+        public async Task<IActionResult> CustomerUpdateParcel(string parcelId, CustomerCreateParcelDTO parcelDTO)
         {
             if (parcelDTO == null)
                 return BadRequest("Model is empty");
@@ -226,7 +226,7 @@ namespace MarteliveryAPI.Controllers
                 parcel.UserId = user.FirstName + " " + user.LastName;
             }
 
-            var parcelsDTO = _mapper.Map<List<ParcelInfoDTO>>(parcels);
+            var parcelsDTO = _mapper.Map<List<GetParcelInfoDTO>>(parcels);
 
             return Ok(parcelsDTO);
         }

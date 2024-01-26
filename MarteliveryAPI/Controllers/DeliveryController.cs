@@ -33,7 +33,7 @@ namespace MarteliveryAPI.Controllers
             if (deliveries.Count == 0)
                 return NotFound("Deliveries not found");
 
-            var deliveriesDTO = _mapper.Map<List<DeliveryInfoDTO>>(deliveries);
+            var deliveriesDTO = _mapper.Map<List<GetDeliveryInfoDTO>>(deliveries);
 
             return Ok(deliveriesDTO);
         }
@@ -48,7 +48,7 @@ namespace MarteliveryAPI.Controllers
             if (delivery == null)
                 return NotFound("Delivery not found");
 
-            var deliveryDTO = _mapper.Map<DeliveryInfoDTO>(delivery);
+            var deliveryDTO = _mapper.Map<GetDeliveryInfoDTO>(delivery);
 
             return Ok(deliveryDTO);
         }
@@ -120,7 +120,7 @@ namespace MarteliveryAPI.Controllers
             if (deliveries.Count == 0)
                 return NotFound("Deliveries not found");
 
-            var deliveriesDTO = _mapper.Map<List<DeliveryInfoDTO>>(deliveries);
+            var deliveriesDTO = _mapper.Map<List<GetDeliveryInfoDTO>>(deliveries);
 
             return Ok(deliveriesDTO);
         }
@@ -228,7 +228,7 @@ namespace MarteliveryAPI.Controllers
             if (deliveries.Count == 0)
                 return NotFound("Deliveries not found");
 
-            var deliveriesDTO = _mapper.Map<List<DeliveryInfoDTO>>(deliveries);
+            var deliveriesDTO = _mapper.Map<List<GetDeliveryInfoDTO>>(deliveries);
 
             return Ok(deliveriesDTO);
         }

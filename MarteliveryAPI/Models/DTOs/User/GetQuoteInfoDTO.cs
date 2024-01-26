@@ -1,6 +1,6 @@
 ﻿namespace MarteliveryAPI.Models.DTOs.User
 {
-    public class QuoteInfoDTO
+    public class GetQuoteInfoDTO
     {
         public string QuoteId { get; set; }
         public decimal PricePerKm { get; set; }

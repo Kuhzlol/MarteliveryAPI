@@ -115,7 +115,7 @@ namespace MarteliveryAPI.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            var userDTO = _mapper.Map<UserInfoDTO>(user);
+            var userDTO = _mapper.Map<GetUserInfoDTO>(user);
 
             return Ok(userDTO);
         }
@@ -123,7 +123,7 @@ namespace MarteliveryAPI.Controllers
         //Put method for user to update their own info
         [HttpPut("UpdateMyInfo")]
         [Authorize(Roles = "Admin, Customer, Carrier")]
-        public async Task<IActionResult> UpdateMyInfo(UserInfoUpdateDTO userDTO)
+        public async Task<IActionResult> UpdateMyInfo(PutUserInfoDTO userDTO)
         {
             if (userDTO == null)
                 return BadRequest("Model is empty");
@@ -158,7 +158,7 @@ namespace MarteliveryAPI.Controllers
         //Put method for user to update their own password with Mapped DTO
         [HttpPut("UpdateMyPassword")]
         [Authorize(Roles = "Admin, Customer, Carrier")]
-        public async Task<IActionResult> UpdateMyPassword(UserPasswordUpdateDTO userDTO, UserManager<User> userManager)
+        public async Task<IActionResult> UpdateMyPassword(PutUserPasswordDTO userDTO, UserManager<User> userManager)
         {
             if (userDTO == null)
                 return BadRequest("Model is empty");
