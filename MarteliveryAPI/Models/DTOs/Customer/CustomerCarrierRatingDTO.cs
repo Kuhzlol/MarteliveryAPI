@@ -2,7 +2,7 @@
 {
     public class CustomerCarrierRatingDTO
     {
-        public string DeliveryId { get; set; }
-        public int CarrierRate { get; set; }
+        public required string DeliveryId { get; set; }
+        public required int CarrierRate { get; set; }
     }
 }
