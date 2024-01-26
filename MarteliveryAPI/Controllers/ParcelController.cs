@@ -127,21 +127,6 @@ namespace MarteliveryAPI.Controllers
             return Ok(parcelsDTO);
         }
 
-        //Get method for customer to get all quotes linked to their parcels with Mapped DTO
-        [HttpGet ("GetMyQuotesInfo")]
-        [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> GetMyQuotesInfo()
-        {
-            var quotes = await _context.Quotes.Where(q => q.Parcel.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
-
-            if (quotes.Count == 0)
-                return NotFound("Quotes not found");
-
-            var quotesDTO = _mapper.Map<List<QuoteInfoDTO>>(quotes);
-
-            return Ok(quotesDTO);
-        }
-
         //Post method for customer to create a parcel with Mapped DTO
         [HttpPost ("CustomerCreateParcel")]
         [Authorize(Roles = "Customer")]
@@ -188,44 +173,6 @@ namespace MarteliveryAPI.Controllers
             return Ok("Parcel updated");
         }
 
-        //Put method for customer to accept a quote linked to his parcel by id with Mapped DTO
-        [HttpPut ("CustomerAcceptQuote/{quoteId}")]
-        [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CustomerAcceptQuote(string quoteId, CustomerAcceptQuoteDTO acceptQuoteDTO)
-        {
-            var quote = await _context.Quotes.FindAsync(quoteId);
-
-            //Check if quote exists
-            if (quote == null)
-                return NotFound("Quote not found");
-
-            //Check if Customer is the owner of the parcel linked to the quote that he wants to accept
-            var parcel = await _context.Parcels.FindAsync(quote.ParcelId);
-            if (parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
-                return Unauthorized("You are not the owner of this parcel");
-
-            //Check if quote status is different from pending
-            if (quote.Status == "Pending")
-                acceptQuoteDTO.Status = "Accepted";
-            else
-                return BadRequest("A quote has already been accepted for this parcel");
-
-            //Set all other quotes linked to the parcel to "Rejected"
-            var quotes = await _context.Quotes.Where(q => q.ParcelId == quote.ParcelId).ToListAsync();
-            foreach (var q in quotes)
-            {
-                if (q.QuoteId != quote.QuoteId)
-                    q.Status = "Rejected";
-            }
-
-            quote = _mapper.Map(acceptQuoteDTO, quote);
-
-            _context.Quotes.Update(quote);
-            await _context.SaveChangesAsync();
-
-            return Ok("Quote accepted");
-        }
-
         //Delete method for customer to delete his parcel by id
         [HttpDelete ("CustomerDeleteParcel/{parcelId}")]
         [Authorize(Roles = "Customer")]
@@ -249,6 +196,39 @@ namespace MarteliveryAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Parcel deleted");
+        }
+
+        /*-----------*/
+        /*  CARRIER  */
+        /*-----------*/
+
+        //Get method for carrier to get all parcels that are not linked to an accepted quote with Mapped DTO
+        [HttpGet ("GetPendingParcelsInfo")]
+        [Authorize(Roles = "Carrier")]
+        public async Task<IActionResult> GetPendingParcelsInfo()
+        {
+            var parcels = await _context.Parcels.ToListAsync();
+
+            if (parcels.Count == 0)
+                return NotFound("Parcels not found");
+
+            //Check if parcel is already linked to a quote with status "Accepted" or "Rejected" and remove it from the list
+            var quotes = await _context.Quotes.Where(q => q.Status == "Accepted" || q.Status == "Rejected").ToListAsync();
+            foreach (var quote in quotes)
+            {
+                parcels.RemoveAll(p => p.ParcelId == quote.ParcelId);
+            }
+
+            //Return the customer FirstName and LastName instead of the UserId
+            foreach (var parcel in parcels)
+            {
+                var user = await _context.Users.FindAsync(parcel.UserId);
+                parcel.UserId = user.FirstName + " " + user.LastName;
+            }
+
+            var parcelsDTO = _mapper.Map<List<ParcelInfoDTO>>(parcels);
+
+            return Ok(parcelsDTO);
         }
     }
 }

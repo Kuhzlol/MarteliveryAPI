@@ -8,6 +8,7 @@ using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.Carrier;
 using System.Security.Claims;
 using MarteliveryAPI.Models.DTOs.User;
+using MarteliveryAPI.Models.DTOs.Customer;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -134,9 +135,9 @@ namespace MarteliveryAPI.Controllers
         /*-----------*/
 
         //Get method for carrier to get all quotes info with Mapped DTO
-        [HttpGet ("GetMyQuotesInfo")]
+        [HttpGet ("GetMyCarrierQuotesInfo")]
         [Authorize(Roles = "Carrier")]
-        public async Task<IActionResult> GetMyQuotesInfo()
+        public async Task<IActionResult> GetMyCarrierQuotesInfo()
         {
             var quotes = await _context.Quotes.Where(q => q.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
 
@@ -165,6 +166,11 @@ namespace MarteliveryAPI.Controllers
             var parcel = await _context.Parcels.FindAsync(quoteDTO.ParcelId);
             if (parcel == null)
                 return NotFound("Parcel not found");
+
+            //Check if a quote has already been accepted for the parcel
+            var acceptedQuote = await _context.Quotes.Where(q => q.ParcelId == quoteDTO.ParcelId && q.Status == "Accepted").FirstOrDefaultAsync();
+            if (acceptedQuote != null)
+                return BadRequest("A quote has already been accepted for this parcel");
 
             //Calculate total price based on price per km and total distance from the parcel
             quote.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
@@ -238,6 +244,63 @@ namespace MarteliveryAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Quote deleted");
+        }
+
+        /*------------*/
+        /*  CUSTOMER  */
+        /*------------*/
+
+        //Get method for customer to get all quotes linked to their parcels with Mapped DTO
+        [HttpGet("GetMyCustomerQuotesInfo")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetMyCustomerQuotesInfo()
+        {
+            var quotes = await _context.Quotes.Where(q => q.Parcel.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
+
+            if (quotes.Count == 0)
+                return NotFound("Quotes not found");
+
+            var quotesDTO = _mapper.Map<List<QuoteInfoDTO>>(quotes);
+
+            return Ok(quotesDTO);
+        }
+
+        //Put method for customer to accept a quote linked to his parcel by id with Mapped DTO
+        [HttpPut("CustomerAcceptQuote/{quoteId}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CustomerAcceptQuote(string quoteId, CustomerAcceptQuoteDTO acceptQuoteDTO)
+        {
+            var quote = await _context.Quotes.FindAsync(quoteId);
+
+            //Check if quote exists
+            if (quote == null)
+                return NotFound("Quote not found");
+
+            //Check if Customer is the owner of the parcel linked to the quote that he wants to accept
+            var parcel = await _context.Parcels.FindAsync(quote.ParcelId);
+            if (parcel.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                return Unauthorized("You are not the owner of this parcel");
+
+            //Check if quote status is different from pending
+            if (quote.Status == "Pending")
+                acceptQuoteDTO.Status = "Accepted";
+            else
+                return BadRequest("A quote has already been accepted for this parcel");
+
+            //Set all other quotes linked to the parcel to "Rejected"
+            var quotes = await _context.Quotes.Where(q => q.ParcelId == quote.ParcelId).ToListAsync();
+            foreach (var q in quotes)
+            {
+                if (q.QuoteId != quote.QuoteId)
+                    q.Status = "Rejected";
+            }
+
+            quote = _mapper.Map(acceptQuoteDTO, quote);
+
+            _context.Quotes.Update(quote);
+            await _context.SaveChangesAsync();
+
+            return Ok("Quote accepted");
         }
     }
 }

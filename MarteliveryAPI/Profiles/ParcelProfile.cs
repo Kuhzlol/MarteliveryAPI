@@ -16,9 +16,7 @@ namespace MarteliveryAPI.Profiles
 
             CreateMap<Parcel, CustomerParcelDTO>().ReverseMap();
             CreateMap<CustomerParcelDTO, Parcel>().ReverseMap();
-
-            CreateMap<Quote, QuoteInfoDTO>().ReverseMap();
-            CreateMap<CustomerAcceptQuoteDTO, Quote>().ReverseMap();
+            CreateMap<ParcelInfoDTO, Parcel>().ReverseMap();
         }
     }
 }
