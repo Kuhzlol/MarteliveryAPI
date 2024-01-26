@@ -57,7 +57,7 @@ namespace MarteliveryAPI.Controllers
         //Put method for admin to update user by id with Mapped DTO
         [HttpPut("AdminUpdateUser/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminUpdateUser(string id, AdminUserUpdateDTO userDTO)
+        public async Task<IActionResult> AdminUpdateUser(string id, AdminUpdateUserDTO userDTO)
         {
             if (userDTO == null)
                 return BadRequest("Model is empty");

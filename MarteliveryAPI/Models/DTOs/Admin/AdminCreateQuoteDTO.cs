@@ -1,6 +1,6 @@
 ﻿namespace MarteliveryAPI.Models.DTOs.Admin
 {
-    public class AdminQuoteUpdateDTO
+    public class AdminCreateQuoteDTO
     {
         public decimal PricePerKm { get; set; }
         public decimal TotalPrice { get; set; }

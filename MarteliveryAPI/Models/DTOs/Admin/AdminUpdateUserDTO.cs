@@ -2,7 +2,7 @@
 
 namespace MarteliveryAPI.Models.DTOs.Admin
 {
-    public class AdminUserUpdateDTO
+    public class AdminUpdateUserDTO
     {
         public required string FirstName { get; set; }
 

@@ -40,11 +40,11 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Get method for admin to get quote info by id with Mapped DTO
-        [HttpGet ("AdminGetQuoteInfo/{id}")]
+        [HttpGet ("AdminGetQuoteInfo/{quoteId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminGetQuoteInfo(string id)
+        public async Task<IActionResult> AdminGetQuoteInfo(string quoteId)
         {
-            var quote = await _context.Quotes.FindAsync(id);
+            var quote = await _context.Quotes.FindAsync(quoteId);
 
             if (quote == null)
                 return NotFound("Quote not found");
@@ -57,7 +57,7 @@ namespace MarteliveryAPI.Controllers
         //Post method for admin to create a quote with Mapped DTO
         [HttpPost("AdminCreateQuote")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminCreateQuote(AdminQuoteCreateDTO quoteDTO)
+        public async Task<IActionResult> AdminCreateQuote(AdminCreateQuoteDTO quoteDTO)
         {
             if (quoteDTO == null)
                 return BadRequest("Quote data is empty");
@@ -82,14 +82,14 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Put method for admin to update a quote by id with Mapped DTO
-        [HttpPut("AdminUpdateQuote/{id}")]
+        [HttpPut("AdminUpdateQuote/{quoteId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminUpdateQuote(string id, AdminQuoteUpdateDTO quoteDTO)
+        public async Task<IActionResult> AdminUpdateQuote(string quoteId, AdminUpdateQuoteDTO quoteDTO)
         {
             if (quoteDTO == null)
                 return BadRequest("Quote data is empty");
 
-            var quote = await _context.Quotes.FindAsync(id);
+            var quote = await _context.Quotes.FindAsync(quoteId);
 
             //Check if quote exists
             if (quote == null)
@@ -115,11 +115,11 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Delete method for admin to delete a quote by id
-        [HttpDelete("AdminDeleteQuote/{id}")]
+        [HttpDelete("AdminDeleteQuote/{quoteId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminDeleteQuote(string id)
+        public async Task<IActionResult> AdminDeleteQuote(string quoteId)
         {
-            var quote = await _context.Quotes.FindAsync(id);
+            var quote = await _context.Quotes.FindAsync(quoteId);
 
             if (quote == null)
                 return NotFound("Quote not found");
@@ -182,14 +182,14 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Put method for carrier to update a quote by id with Mapped DTO
-        [HttpPut("CarrierUpdateQuote/{id}")]
+        [HttpPut("CarrierUpdateQuote/{quoteId}")]
         [Authorize(Roles = "Carrier")]
-        public async Task<IActionResult> CarrierUpdateQuote(string id, CarrierQuoteDTO quoteDTO)
+        public async Task<IActionResult> CarrierUpdateQuote(string quoteId, CarrierQuoteDTO quoteDTO)
         {
             if (quoteDTO == null)
                 return BadRequest("Model is empty");
             
-            var quote = await _context.Quotes.FindAsync(id);
+            var quote = await _context.Quotes.FindAsync(quoteId);
 
             //Check if quote belongs to the carrier
             if (quote.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -223,11 +223,11 @@ namespace MarteliveryAPI.Controllers
         }
 
         //Delete method for carrier to delete a quote by id
-        [HttpDelete("CarrierDeleteQuote/{id}")]
+        [HttpDelete("CarrierDeleteQuote/{quoteId}")]
         [Authorize(Roles = "Carrier")]
-        public async Task<IActionResult> CarrierDeleteQuote(string id)
+        public async Task<IActionResult> CarrierDeleteQuote(string quoteId)
         {
-            var quote = await _context.Quotes.FindAsync(id);
+            var quote = await _context.Quotes.FindAsync(quoteId);
 
             //Check if quote belongs to the carrier
             if (quote.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))

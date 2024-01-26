@@ -12,8 +12,8 @@ namespace MarteliveryAPI.Profiles
         public QuoteProfile()
         {
             CreateMap<Quote, AdminQuoteInfoDTO>().ReverseMap();
-            CreateMap<AdminQuoteCreateDTO, Quote>().ReverseMap();
-            CreateMap<AdminQuoteUpdateDTO, Quote>().ReverseMap();
+            CreateMap<AdminCreateQuoteDTO, Quote>().ReverseMap();
+            CreateMap<AdminUpdateQuoteDTO, Quote>().ReverseMap();
 
             CreateMap<Quote, CarrierQuoteDTO>().ReverseMap();
             CreateMap<Quote, QuoteInfoDTO>().ReverseMap();

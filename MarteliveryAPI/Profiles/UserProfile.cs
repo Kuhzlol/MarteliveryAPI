@@ -11,7 +11,7 @@ namespace MarteliveryAPI.Profiles
         {
             CreateMap<User, AdminUserInfoDTO>().ReverseMap();
             CreateMap<AdminUserInfoDTO, User>().ReverseMap();
-            CreateMap<AdminUserUpdateDTO, User>().ReverseMap();
+            CreateMap<AdminUpdateUserDTO, User>().ReverseMap();
 
             CreateMap<User, UserInfoDTO>().ReverseMap();
             CreateMap<UserInfoUpdateDTO, User>().ReverseMap();

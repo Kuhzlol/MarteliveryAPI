@@ -57,7 +57,7 @@ namespace MarteliveryAPI.Controllers
         //Post method for admin to create a parcel with Mapped DTO
         [HttpPost("AdminCreateParcel")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminCreateParcel(AdminParcelCreateDTO parcelDTO)
+        public async Task<IActionResult> AdminCreateParcel(AdminCreateParcelDTO parcelDTO)
         {
             if (parcelDTO == null)
                 return BadRequest("Model is empty");
@@ -73,7 +73,7 @@ namespace MarteliveryAPI.Controllers
         //Put method for admin to update a parcel by id with Mapped DTO
         [HttpPut("AdminUpdateParcel/{parcelId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AdminUpdateParcel(string parcelId, AdminParcelUpdateDTO parcelDTO)
+        public async Task<IActionResult> AdminUpdateParcel(string parcelId, AdminUpdateParcelDTO parcelDTO)
         {
             if (parcelDTO == null)
                 return BadRequest("Model is empty");
