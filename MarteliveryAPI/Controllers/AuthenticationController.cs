@@ -5,7 +5,7 @@ using MarteliveryAPI.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using static MarteliveryAPI.Services.UserServices.UserResponse;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace MarteliveryAPI.Controllers
 {
@@ -56,8 +56,51 @@ namespace MarteliveryAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("ConfirmEmail")]
+        
+        /// <summary>
+        /// Resend confirmation link to the user email address
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST Authentication/ResendConfirmationLink
+        ///     {
+        ///         "email": "John.doe@gmail.com"
+        ///     }
+        /// </remarks>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        /// <response code="200">Email sent</response>
+        /// <response code="400">User already registered</response>
+        [HttpPost("ResendConfirmationLink")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResendConfirmationLink(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return BadRequest("User already registered");
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { token, email = email }, Request.Scheme);
+
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader("wwwroot/html/EmailConfirmation.html"))
+            {
+                body = await reader.ReadToEndAsync();
+            }
+            body = body.Replace("{ConfirmationLink}", confirmationLink);
+            body = body.Replace("{UserName}", email);
+
+            var message = new Message(new string[] { email }, "Account Confirmation", body, null);
+            await _emailSender.SendEmailAsync(message);
+
+            return Ok("Email sent");
+        }
+
+        [HttpGet("ConfirmEmail")]
+        //Hide this method from Swagger UI
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
