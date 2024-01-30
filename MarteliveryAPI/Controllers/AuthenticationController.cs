@@ -115,6 +115,21 @@ namespace MarteliveryAPI.Controllers
             return Ok("Email sent");
         }
 
+        /// <summary>
+        /// Reset the password for the user email address
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST Authentication/ForgotPassword
+        ///     {
+        ///         "email": "John.doe@gmail.com"
+        ///     }
+        /// </remarks>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        /// <response code="200">Email sent</response>
+        /// <response code="400">User already registered</response>
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword(string email)
         {
