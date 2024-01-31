@@ -194,7 +194,7 @@ namespace MarteliveryAPI.Controllers
             if (user == null)
                 return BadRequest("Error");
 
-            //Set a new password only for testing purposes
+            //Set a new default password for the user account(For testing purposes)
             var newPassword = "Test123*";
             user.PasswordHash = newPassword;
 

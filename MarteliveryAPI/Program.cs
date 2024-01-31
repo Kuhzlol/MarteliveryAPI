@@ -15,6 +15,7 @@ using MarteliveryAPI.CustomTokenProviders;
 using Microsoft.CodeAnalysis.Options;
 using System.Security.Policy;
 using System.Reflection;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,8 +49,19 @@ builder.Services.AddSingleton(emailConfig);
 //Dependency Injection
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+//Stripe Configuration
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
 //CORS to allow any origin, any method and any header
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 /*******************************/
 /*Identity & JWT Authentication*/
@@ -232,7 +244,9 @@ app.UseSwaggerUI(options =>
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors();
+
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
