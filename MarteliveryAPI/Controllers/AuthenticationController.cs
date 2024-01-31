@@ -16,7 +16,25 @@ namespace MarteliveryAPI.Controllers
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly IEmailSender _emailSender = emailSender;
-        
+
+        /// <summary>
+        /// Create a new account for the user and send a confirmation link to his email address
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST Authentication/Register
+        ///     {
+        ///         "firstName": "John",
+        ///         "lastName": "Doe",
+        ///         "dateOfBirth": "2006-01-31",
+        ///         "email": "John.doe@gmail.com",
+        ///         "password": "Johndoe1*",
+        ///         "isCustomer": true
+        ///     }
+        /// </remarks>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterDTO userDTO)
         {
@@ -57,7 +75,7 @@ namespace MarteliveryAPI.Controllers
         /// 
         ///     POST Authentication/Login
         ///     {
-        ///         "email": "John.doe@gmail.com"
+        ///         "email": "John.doe@gmail.com",
         ///         "password": "Johndoe1*"
         ///     }
         /// </remarks>
