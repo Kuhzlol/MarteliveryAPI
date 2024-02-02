@@ -9,16 +9,18 @@ using MarteliveryAPI.Models.DTOs.Carrier;
 using System.Security.Claims;
 using MarteliveryAPI.Models.DTOs.User;
 using MarteliveryAPI.Models.DTOs.Customer;
+using MarteliveryAPI.Services.EmailServices;
 
 namespace MarteliveryAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class QuoteController(DataContext context, IMapper mapper) : ControllerBase
+    public class QuoteController(DataContext context, IMapper mapper, IEmailSender emailSender) : ControllerBase
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly IEmailSender _emailSender = emailSender;
 
         /*---------*/
         /*  ADMIN  */
@@ -175,6 +177,18 @@ namespace MarteliveryAPI.Controllers
             //Calculate total price based on price per km and total distance from the parcel
             quote.TotalPrice = quoteDTO.PricePerKm * parcel.TotalDistance;
 
+            var customer = await _context.Users.Where(u => u.Id == parcel.UserId).FirstOrDefaultAsync();
+
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader("wwwroot/html/QuoteCreated.html"))
+            {
+                body = await reader.ReadToEndAsync();
+            }
+            body = body.Replace("{customerName}", customer.FirstName);
+
+            var message = new Message(new string[] { customer.Email }, "Quote created by the carrier", body, null);
+            await _emailSender.SendEmailAsync(message);
+
             _context.Quotes.Add(quote);
             await _context.SaveChangesAsync();
 
@@ -283,7 +297,21 @@ namespace MarteliveryAPI.Controllers
 
             //Check if quote status is different from pending
             if (quote.Status == "Pending")
+            {
                 acceptQuoteDTO.Status = "Accepted";
+
+                var carrier = await _context.Users.FindAsync(quote.UserId);
+
+                string body = string.Empty;
+                using (StreamReader reader = new StreamReader("wwwroot/html/QuoteAccepted.html"))
+                {
+                    body = await reader.ReadToEndAsync();
+                }
+                body = body.Replace("{carrierName}", carrier.FirstName);
+
+                var message = new Message(new string[] { carrier.Email }, "Quote created by the carrier", body, null);
+                await _emailSender.SendEmailAsync(message);
+            }
             else
                 return BadRequest("A quote has already been accepted for this parcel");
 

@@ -23,6 +23,8 @@
     <Content Remove="wwwroot\html\ParcelCollectedByCarrier.html" />
     <Content Remove="wwwroot\html\ParcelDelivered.html" />
     <Content Remove="wwwroot\html\ParcelOnDelivery.html" />
+    <Content Remove="wwwroot\html\QuoteAccepted.html" />
+    <Content Remove="wwwroot\html\QuoteCreated.html" />
   </ItemGroup>
 
    <ItemGroup>
@@ -62,6 +64,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\html\QuoteAccepted.html" />
+    <None Include="wwwroot\html\QuoteCreated.html" />
     <None Include="wwwroot\html\ParcelDelivered.html" />
     <None Include="wwwroot\html\ParcelOnDelivery.html" />
     <None Include="wwwroot\html\ParcelCollectedByCarrier.html" />
