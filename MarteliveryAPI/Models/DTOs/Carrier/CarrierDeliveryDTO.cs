@@ -2,8 +2,8 @@
 {
     public class CarrierDeliveryDTO
     {
-        public required DateTime DeliveryTime { get; set; }
-        public required string DeliveryStatus { get; set; }
-        public required string QuoteId { get; set; }
+        public DateTime? DeliveryTime { get; set; }
+        public string? DeliveryStatus { get; set; }
+        public string? QuoteId { get; set; }
     }
 }

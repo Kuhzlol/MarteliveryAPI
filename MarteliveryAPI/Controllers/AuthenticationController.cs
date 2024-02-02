@@ -108,13 +108,13 @@ namespace MarteliveryAPI.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         /// <response code="200">Email sent</response>
-        /// <response code="400">User already registered</response>
+        /// <response code="400">User not found</response>
         [HttpPost("ResendConfirmationLink")]
         public async Task<IActionResult> ResendConfirmationLink(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return BadRequest("User already registered");
+                return BadRequest("User not found");
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { token, email = email }, Request.Scheme);

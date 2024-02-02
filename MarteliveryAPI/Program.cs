@@ -121,14 +121,6 @@ builder.Services.AddAuthentication(options =>
 //Add Authentication to Swagger UI
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Description = "Standard Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
-        Type = SecuritySchemeType.ApiKey,
-    });
-
     options.SwaggerDoc("v1", new OpenApiInfo 
     { 
         Title = "MarteliveryAPI", 
@@ -218,6 +210,14 @@ builder.Services.AddSwaggerGen(options =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
     options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Description = "Standard Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+        Type = SecuritySchemeType.ApiKey
+    });
 });
 
 //Dependency Injection

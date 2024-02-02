@@ -143,7 +143,7 @@ namespace MarteliveryAPI.Services.UserServices
                 issuer: config["Jwt:Issuer"],
                 audience: config["Jwt:Audience"],
                 claims: userClaims,
-                expires: DateTime.UtcNow.AddMinutes(10),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: credentials
                 );
 

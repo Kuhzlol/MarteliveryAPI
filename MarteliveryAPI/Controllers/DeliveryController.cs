@@ -4,9 +4,11 @@ using MarteliveryAPI.Models.Domain;
 using MarteliveryAPI.Models.DTOs.Admin;
 using MarteliveryAPI.Models.DTOs.Carrier;
 using MarteliveryAPI.Models.DTOs.User;
+using MarteliveryAPI.Services.EmailServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NETCore.MailKit.Core;
 using System.Security.Claims;
 
 namespace MarteliveryAPI.Controllers
@@ -14,10 +16,11 @@ namespace MarteliveryAPI.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class DeliveryController(DataContext context, IMapper mapper) : ControllerBase
+    public class DeliveryController(DataContext context, IMapper mapper, IEmailSender emailSender) : ControllerBase
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private readonly IEmailSender _emailSender = emailSender;
 
         /*---------*/
         /*  ADMIN  */
@@ -156,12 +159,27 @@ namespace MarteliveryAPI.Controllers
             delivery.DeliveryStatus = "Collected by the carrier";
 
             //Set the delivery time to the current UTC time + 2 hours
-            delivery.DeliveryTime = DateTime.UtcNow.AddHours(2);
+            delivery.DeliveryTime = DateTime.UtcNow.AddHours(2);            
+
+            //Send an email to the customer to inform him that his parcel is on delivery
+            var parcel = await _context.Parcels.Where(p => p.ParcelId == quote.ParcelId).FirstOrDefaultAsync();
+            var customer = await _context.Users.Where(u => u.Id == parcel.UserId).FirstOrDefaultAsync();
+            var carrier = await _context.Users.Where(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)).FirstOrDefaultAsync();
+
+            string body = string.Empty;
+            using (StreamReader reader = new StreamReader("wwwroot/html/ParcelCollectedByCarrier.html"))
+            {
+                body = await reader.ReadToEndAsync();
+            }
+            body = body.Replace("{customerName}", customer.FirstName);
+
+            var message = new Message(new string[] { customer.Email }, "Parcel collected by the carrier", body, null);
+            await _emailSender.SendEmailAsync(message);
 
             _context.Deliveries.Add(delivery);
             await _context.SaveChangesAsync();
 
-            return Ok("Delivery created successfully");
+            return Ok("Delivery created successfully and notification sent to the customer");
         }
 
         //Put method for carrier to update a delivery by id with Mapped DTO
@@ -190,16 +208,39 @@ namespace MarteliveryAPI.Controllers
             if (deliveryDTO.DeliveryTime < delivery.PickupTime)
                 return BadRequest("Delivery time can't be lower than Pickup time");
 
+            var parcel = await _context.Parcels.Where(p => p.ParcelId == quote.ParcelId).FirstOrDefaultAsync();
+            var customer = await _context.Users.Where(u => u.Id == parcel.UserId).FirstOrDefaultAsync();
+            var carrier = await _context.Users.Where(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)).FirstOrDefaultAsync();
+            string body = string.Empty;
+
             //Check if delivery status is "Collected by the carrier" or "On delivery" to update it
             if (delivery.DeliveryStatus == "Collected by the carrier")
             { 
                 deliveryDTO.DeliveryStatus = "On delivery";
                 deliveryDTO.DeliveryTime = (DateTime)delivery.DeliveryTime;
+
+                using (StreamReader reader = new StreamReader("wwwroot/html/ParcelOnDelivery.html"))
+                {
+                    body = await reader.ReadToEndAsync();
+                }
+                body = body.Replace("{customerName}", customer.FirstName);
+
+                var message = new Message(new string[] { customer.Email }, "Your parcel is on the way", body, null);
+                await _emailSender.SendEmailAsync(message);
             }
             else if (delivery.DeliveryStatus == "On delivery")
             {
                 deliveryDTO.DeliveryStatus = "Delivered";
                 deliveryDTO.DeliveryTime = DateTime.UtcNow;
+
+                using (StreamReader reader = new StreamReader("wwwroot/html/ParcelDelivered.html"))
+                {
+                    body = await reader.ReadToEndAsync();
+                }
+                body = body.Replace("{customerName}", customer.FirstName);
+
+                var message = new Message(new string[] { customer.Email }, "Your parcel has been delivered", body, null);
+                await _emailSender.SendEmailAsync(message);
             }
             else
             {
